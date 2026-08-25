@@ -9,11 +9,10 @@
 // CONFIGURATION
 // ============================================================
 
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "https://trustguard-ai-zbkz.onrender.com";
 
 const MESSAGE_ENDPOINT = `${API_BASE_URL}/analyze`;
 const VOICE_ENDPOINT = `${API_BASE_URL}/analyze-voice`;
-
 const MAX_VOICE_FILE_SIZE = 25 * 1024 * 1024;
 
 
