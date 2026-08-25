@@ -1,0 +1,904 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+    min-height: 100vh;
+}
+
+.container {
+    width: 90%;
+    max-width: 850px;
+    margin: 50px auto;
+}
+
+h1 {
+    text-align: center;
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #64748b;
+    font-size: 18px;
+    margin-bottom: 35px;
+}
+
+
+/* =========================================
+   COMMON CARDS
+========================================= */
+
+.card,
+.result,
+.incoming-card,
+.live-status,
+.threat-alert,
+.voice-card {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+}
+
+.card h2,
+.result h2,
+.incoming-card h2,
+.threat-alert h2,
+.voice-card h2 {
+    margin-bottom: 20px;
+}
+
+
+/* =========================================
+   MESSAGE TEXTAREA
+========================================= */
+
+textarea {
+    width: 100%;
+    height: 180px;
+    padding: 15px;
+    border: 2px solid #dbe2ea;
+    border-radius: 10px;
+    resize: vertical;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #2563eb;
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+button {
+    width: 100%;
+    margin-top: 18px;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================================
+   LIVE PROTECTION STATUS
+========================================= */
+
+.live-status {
+    background: #ecfdf5;
+    border: 2px solid #22c55e;
+    text-align: center;
+}
+
+.live-status strong {
+    color: #15803d;
+    font-size: 18px;
+}
+
+.live-status p {
+    margin-top: 10px;
+    color: #166534;
+}
+
+.status-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background: #22c55e;
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse 1.5s infinite;
+}
+
+
+/* =========================================
+   INCOMING COMMUNICATION
+========================================= */
+
+.incoming-card {
+    border-left: 5px solid #2563eb;
+}
+
+.message-preview {
+    background: #f1f5f9;
+    padding: 18px;
+    border-radius: 10px;
+    margin: 15px 0;
+}
+
+.message-preview strong {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.message-preview p {
+    line-height: 1.6;
+}
+
+
+/* =========================================
+   THREAT ALERT
+========================================= */
+
+.threat-alert {
+    background: #fff1f2;
+    border: 2px solid #ef4444;
+}
+
+.threat-alert h2 {
+    color: #dc2626;
+}
+
+.threat-alert p {
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.threat-alert button {
+    margin-top: 10px;
+}
+
+
+/* =========================================
+   ANALYSIS RESULT
+========================================= */
+
+.result p {
+    margin: 12px 0;
+    line-height: 1.6;
+}
+
+.result h3 {
+    margin-top: 22px;
+    margin-bottom: 10px;
+}
+
+#indicators {
+    padding-left: 25px;
+}
+
+#indicators li {
+    margin-bottom: 8px;
+}
+
+#recommendation {
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+
+/* =========================================
+   SECURITY DASHBOARD
+========================================= */
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px 12px;
+    border-radius: 14px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    border-top: 4px solid #2563eb;
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+.stat-card h3 {
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.stat-card p {
+    font-size: 26px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+
+/* =========================================
+   DASHBOARD RISK COLORS
+========================================= */
+
+#currentRisk.risk-low {
+    color: #16a34a;
+}
+
+#currentRisk.risk-medium {
+    color: #ea580c;
+}
+
+#currentRisk.risk-high {
+    color: #dc2626;
+}
+
+
+/* =========================================
+   VOICE ANALYZER
+========================================= */
+
+.voice-card {
+    border-left: 5px solid #7c3aed;
+}
+
+.voice-card h2 {
+    color: #4c1d95;
+}
+
+.voice-card p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+
+/* =========================================
+   FILE UPLOAD
+========================================= */
+
+.voice-card input[type="file"] {
+    width: 100%;
+    padding: 14px;
+    border: 2px dashed #c4b5fd;
+    border-radius: 10px;
+    background: #faf5ff;
+    font-size: 15px;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+
+/* =========================================
+   VOICE ANALYZE BUTTON
+========================================= */
+
+.voice-card button {
+    background: #7c3aed;
+}
+
+.voice-card button:hover {
+    background: #6d28d9;
+}
+
+
+/* =========================================
+   VOICE RESULT
+========================================= */
+
+.voice-result {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f5f3ff;
+    border-radius: 10px;
+    border: 1px solid #ddd6fe;
+}
+
+.voice-result h3 {
+    margin-bottom: 15px;
+    color: #4c1d95;
+}
+
+.voice-result p {
+    margin: 8px 0;
+}
+
+
+/* =========================================
+   IMPERSONATION RISK BOX
+========================================= */
+
+.voice-risk {
+    margin-top: 20px;
+    padding: 18px;
+    background: white;
+    border-radius: 10px;
+    border-left: 5px solid #7c3aed;
+}
+
+.voice-risk h3 {
+    margin-bottom: 12px;
+}
+
+
+/* =========================================
+   VOICE RISK LEVELS
+========================================= */
+
+#voiceRiskLevel.risk-low {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+#voiceRiskLevel.risk-medium {
+    color: #ea580c;
+    font-weight: bold;
+}
+
+#voiceRiskLevel.risk-high {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+
+/* =========================================
+   VOICE RISK SCORE
+========================================= */
+
+#voiceRiskScore {
+    font-weight: bold;
+}
+
+
+/* =========================================
+   VOICE INDICATORS
+========================================= */
+
+.voice-indicators {
+    margin-top: 20px;
+    padding: 18px;
+    background: white;
+    border-radius: 10px;
+    border-left: 5px solid #ef4444;
+}
+
+.voice-indicators h3 {
+    color: #991b1b;
+    margin-bottom: 12px;
+}
+
+#voiceIndicatorList {
+    padding-left: 25px;
+}
+
+#voiceIndicatorList li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+
+/* =========================================
+   VOICE WARNING
+========================================= */
+
+#voiceWarning {
+    margin-top: 15px;
+}
+
+.voice-risk-high {
+    padding: 15px;
+    background: #fee2e2;
+    border-left: 5px solid #dc2626;
+    border-radius: 8px;
+}
+
+.voice-risk-medium {
+    padding: 15px;
+    background: #ffedd5;
+    border-left: 5px solid #ea580c;
+    border-radius: 8px;
+}
+
+.voice-risk-low {
+    padding: 15px;
+    background: #dcfce7;
+    border-left: 5px solid #16a34a;
+    border-radius: 8px;
+}
+
+.voice-risk-high strong {
+    color: #b91c1c;
+}
+
+.voice-risk-medium strong {
+    color: #c2410c;
+}
+
+.voice-risk-low strong {
+    color: #15803d;
+}
+
+.voice-disclaimer {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+
+/* =========================================
+   GENERAL RISK LEVELS
+========================================= */
+
+.low-risk {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+.medium-risk {
+    color: #f59e0b;
+    font-weight: bold;
+}
+
+.high-risk {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+
+/* =========================================
+   HIDDEN ELEMENTS
+========================================= */
+
+.hidden {
+    display: none;
+}
+
+
+/* =========================================
+   LIVE ANIMATION
+========================================= */
+
+@keyframes pulse {
+
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: scale(1.15);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+}
+
+
+/* =========================================
+   MOBILE RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 700px) {
+
+    .container {
+        width: 94%;
+        margin: 25px auto;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+    }
+
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card,
+    .result,
+    .incoming-card,
+    .live-status,
+    .threat-alert,
+    .voice-card {
+        padding: 20px;
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+
+}
+/* =========================================================
+   VOICE CALL PROTECTION
+========================================================= */
+
+.voice-call-card {
+    border-left: 5px solid #dc2626;
+}
+
+.voice-call-status {
+    margin-top: 15px;
+    padding: 18px;
+    background: #f1f5f9;
+    border-radius: 10px;
+    line-height: 1.7;
+}
+
+.voice-call-result {
+    margin-top: 20px;
+}
+
+.voice-call-danger,
+.voice-call-warning-box,
+.voice-call-safe,
+.voice-verification {
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 15px;
+}
+
+.voice-call-danger {
+    background: #fff1f2;
+    border: 2px solid #ef4444;
+}
+
+.voice-call-danger h3 {
+    color: #dc2626;
+}
+
+.voice-call-warning-box {
+    background: #fffbeb;
+    border: 2px solid #f59e0b;
+}
+
+.voice-call-safe {
+    background: #ecfdf5;
+    border: 2px solid #22c55e;
+}
+
+.voice-verification {
+    background: #eff6ff;
+    border: 2px solid #2563eb;
+}
+
+.voice-call-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.voice-call-actions button {
+    flex: 1;
+}
+
+.voice-call-warning {
+    margin-top: 15px;
+    padding: 12px;
+    background: #fee2e2;
+    border-radius: 8px;
+}
+
+.voice-call-result button {
+    margin-top: 10px;
+}
+/* =========================================================
+   THREAT TRACKERS - VOICE CALL PROTECTION
+========================================================= */
+
+.voice-call-protection {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+
+    border: 2px solid #ef4444;
+    border-left: 6px solid #dc2626;
+
+    animation: protectionAppear 0.4s ease;
+}
+
+.voice-call-protection.hidden {
+    display: none;
+}
+
+
+/* HEADER */
+
+.voice-protection-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.voice-alert-icon {
+    font-size: 40px;
+}
+
+.voice-protection-header h2 {
+    margin: 0;
+    color: #b91c1c;
+    font-size: 24px;
+}
+
+.voice-protection-header p {
+    margin-top: 6px;
+    color: #64748b;
+}
+
+
+/* STATUS */
+
+.voice-protection-status {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.protection-item {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.protection-item span {
+    display: block;
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 7px;
+}
+
+.protection-item strong {
+    font-size: 16px;
+}
+
+
+/* RISK COLORS */
+
+.risk-high {
+    color: #dc2626 !important;
+}
+
+.risk-medium {
+    color: #f59e0b !important;
+}
+
+.risk-low {
+    color: #16a34a !important;
+}
+
+
+/* WARNING MESSAGE */
+
+.protection-message {
+    background: #fff1f2;
+    border: 1px solid #fecdd3;
+    border-left: 5px solid #ef4444;
+
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.protection-message h3 {
+    color: #b91c1c;
+    margin-bottom: 10px;
+}
+
+.protection-message p {
+    line-height: 1.6;
+}
+
+.protection-warning {
+    margin-top: 12px;
+    font-weight: bold;
+    color: #991b1b;
+}
+
+
+/* VERIFICATION */
+
+.verification-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-left: 5px solid #2563eb;
+
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.verification-box h3 {
+    color: #1d4ed8;
+    margin-bottom: 10px;
+}
+
+.verification-box p {
+    line-height: 1.6;
+}
+
+
+/* VERIFY BUTTON */
+
+.verify-button {
+    background: #2563eb;
+    margin-top: 15px;
+}
+
+.verify-button:hover {
+    background: #1d4ed8;
+}
+
+
+/* ACTION BUTTONS */
+
+.voice-protection-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.voice-protection-actions button {
+    flex: 1;
+    margin-top: 0;
+}
+
+
+/* BLOCK CALL */
+
+.block-call-button {
+    background: #dc2626;
+}
+
+.block-call-button:hover {
+    background: #b91c1c;
+}
+
+
+/* CONTINUE */
+
+.safe-call-button {
+    background: #f59e0b;
+}
+
+.safe-call-button:hover {
+    background: #d97706;
+}
+
+
+/* RESULT */
+
+.call-protection-result {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 10px;
+    line-height: 1.6;
+}
+
+.call-protection-result h3 {
+    margin-bottom: 8px;
+}
+
+
+/* BLOCKED */
+
+.call-protection-result.blocked {
+    background: #fee2e2;
+    border: 2px solid #ef4444;
+    color: #991b1b;
+}
+
+
+/* VERIFICATION */
+
+.call-protection-result.verification {
+    background: #dbeafe;
+    border: 2px solid #3b82f6;
+    color: #1e40af;
+}
+
+
+/* WARNING */
+
+.call-protection-result.warning {
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+    color: #92400e;
+}
+
+
+/* BLOCKED PANEL */
+
+.voice-call-protection.call-blocked {
+    border-color: #dc2626;
+    background: #fff7f7;
+}
+
+
+/* ANIMATION */
+
+@keyframes protectionAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .voice-protection-status {
+        grid-template-columns: 1fr;
+    }
+
+    .voice-protection-actions {
+        flex-direction: column;
+    }
+
+    .voice-protection-header {
+        align-items: flex-start;
+    }
+
+    .voice-protection-header h2 {
+        font-size: 20px;
+    }
+
+    .voice-alert-icon {
+        font-size: 30px;
+    }
+
+}

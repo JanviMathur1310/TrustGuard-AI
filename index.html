@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TrustGuard AI</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <h1>🛡️ TrustGuard AI</h1>
+
+    <p class="subtitle">
+        AI-Powered Digital Scam Detection & Real-Time Protection
+    </p>
+
+
+    <!-- =====================================================
+         MESSAGE ANALYZER
+    ====================================================== -->
+
+    <div class="card">
+
+        <h2>🔍 Check a Suspicious Message</h2>
+
+        <textarea
+            id="message"
+            placeholder="Paste a suspicious message here..."
+        ></textarea>
+
+        <button onclick="analyzeMessage()">
+            🔎 Analyze Message
+        </button>
+
+        <button
+            onclick="startLiveProtection()"
+            class="live-button"
+        >
+            🛡️ Start Live Protection
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         VOICE CLONING DETECTION
+    ====================================================== -->
+
+    <div class="card voice-card">
+
+        <h2>🎙️ Voice Cloning Detection</h2>
+
+        <p>
+            Upload a voice recording to analyze its
+            acoustic characteristics and assess
+            potential impersonation risk.
+        </p>
+
+
+        <!-- AUDIO FILE -->
+
+        <input
+            type="file"
+            id="voiceFile"
+            accept=".wav,.mp3,.ogg,.flac"
+        >
+
+
+        <!-- ANALYZE BUTTON -->
+
+        <button onclick="analyzeVoice()">
+            🎙️ Analyze Voice
+        </button>
+
+
+        <!-- =================================================
+             VOICE ANALYSIS RESULT
+        ================================================== -->
+
+        <div
+            id="voiceResult"
+            class="voice-result hidden"
+        >
+
+            <h3>📊 Voice Analysis Result</h3>
+
+
+            <!-- STATUS -->
+
+            <p>
+                <strong>Status:</strong>
+                <span id="voiceStatus"></span>
+            </p>
+
+
+            <!-- DURATION -->
+
+            <p>
+                <strong>Duration:</strong>
+                <span id="voiceDuration"></span>
+                seconds
+            </p>
+
+
+            <!-- AVERAGE ENERGY -->
+
+            <p>
+                <strong>Average Energy:</strong>
+                <span id="voiceEnergy"></span>
+            </p>
+
+
+            <!-- ZERO CROSSING RATE -->
+
+            <p>
+                <strong>Zero Crossing Rate:</strong>
+                <span id="voiceZcr"></span>
+            </p>
+
+
+            <!-- SPECTRAL CENTROID -->
+
+            <p>
+                <strong>Spectral Centroid:</strong>
+                <span id="voiceCentroid"></span>
+            </p>
+
+
+            <!-- =================================================
+                 IMPERSONATION RISK
+            ================================================== -->
+
+            <div
+                id="voiceRisk"
+                class="voice-risk"
+            >
+
+                <h3>
+                    🛡️ Impersonation Risk
+                </h3>
+
+
+                <p>
+                    <strong>Risk Score:</strong>
+                    <span id="voiceRiskScore">--</span>/100
+                </p>
+
+
+                <p>
+                    <strong>Risk Level:</strong>
+                    <span id="voiceRiskLevel">--</span>
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 VOICE INDICATORS
+            ================================================== -->
+
+            <div
+                id="voiceIndicators"
+                class="voice-indicators"
+            >
+
+                <h3>
+                    🚨 Voice Indicators
+                </h3>
+
+
+                <ul id="voiceIndicatorList">
+                </ul>
+
+            </div>
+
+
+            <!-- =================================================
+                 VOICE WARNING
+            ================================================== -->
+
+            <div id="voiceWarning"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         LIVE PROTECTION STATUS
+    ====================================================== -->
+
+    <div
+        id="liveStatus"
+        class="live-status hidden"
+    >
+
+        <span class="status-dot"></span>
+
+        <strong>
+            LIVE PROTECTION ACTIVE
+        </strong>
+
+        <p>
+            ThreatTrackers is monitoring
+            incoming communications.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         LIVE DASHBOARD STATS
+    ====================================================== -->
+
+    <div class="stats-container">
+
+
+        <!-- MESSAGE SCANS -->
+
+        <div class="stat-card">
+
+            <h3>
+                📩 Messages Scanned
+            </h3>
+
+            <p id="messagesScanned">
+                0
+            </p>
+
+        </div>
+
+
+        <!-- VOICE SCANS -->
+
+        <div class="stat-card">
+
+            <h3>
+                🎙️ Voice Scans
+            </h3>
+
+            <p id="voiceScans">
+                0
+            </p>
+
+        </div>
+
+
+        <!-- THREATS -->
+
+        <div class="stat-card">
+
+            <h3>
+                🚨 Threats Detected
+            </h3>
+
+            <p id="threatsDetected">
+                0
+            </p>
+
+        </div>
+
+
+        <!-- CURRENT RISK -->
+
+        <div class="stat-card">
+
+            <h3>
+                ⚠️ Current Risk
+            </h3>
+
+            <p id="currentRisk">
+                LOW
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         INCOMING COMMUNICATION
+    ====================================================== -->
+
+    <div
+        id="incomingCard"
+        class="incoming-card hidden"
+    >
+
+        <h2>
+            📩 Incoming Communication
+        </h2>
+
+
+        <div class="message-preview">
+
+            <strong>
+                Unknown Sender
+            </strong>
+
+            <p id="incomingMessage"></p>
+
+        </div>
+
+
+        <p id="analysisStatus">
+            🧠 Waiting for analysis...
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         THREAT ALERT
+    ====================================================== -->
+
+    <div
+        id="threatAlert"
+        class="threat-alert hidden"
+    >
+
+        <h2>
+            🚨 THREAT DETECTED
+        </h2>
+
+
+        <p id="threatMessage"></p>
+
+
+        <button onclick="viewThreatDetails()">
+            🔍 View Details
+        </button>
+
+
+        <button onclick="blockThreat()">
+            🛑 Block / Don't Respond
+        </button>
+
+
+        <button onclick="dismissThreat()">
+            Dismiss
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         MESSAGE ANALYSIS RESULT
+    ====================================================== -->
+
+    <div
+        id="result"
+        class="result hidden"
+    >
+
+        <h2>
+            📊 Analysis Result
+        </h2>
+
+
+        <p>
+            <strong>Risk Score:</strong>
+            <span id="score"></span>/100
+        </p>
+
+
+        <p>
+            <strong>Risk Level:</strong>
+            <span id="level"></span>
+        </p>
+
+
+        <h3>
+            🚨 Detected Indicators
+        </h3>
+
+
+        <ul id="indicators"></ul>
+
+
+        <h3>
+            💡 Recommendation
+        </h3>
+
+
+        <p id="recommendation"></p>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
