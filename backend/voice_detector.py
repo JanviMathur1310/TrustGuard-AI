@@ -103,7 +103,8 @@ def analyze_voice(audio_path):
         energy_variation = float(
             np.std(rms)
         )
-                # ============================================
+
+        # ============================================
         # 3. SPEECH-TO-TEXT + SCAM CONTENT DETECTION
         # ============================================
 
@@ -165,6 +166,31 @@ def analyze_voice(audio_path):
                 content_risk_score, _ = calculate_risk(
                     speech_indicators
                 )
+
+                # Voice-specific scam risk adjustment
+                otp_indicator = "OTP or verification-code request"
+                urgency_indicator = "Urgency or pressure"
+                banking_indicator = "Banking or KYC-related content"
+
+                # An OTP request alone should be at least MEDIUM risk
+                if otp_indicator in speech_indicators:
+                    content_risk_score = max(
+                        content_risk_score,
+                        40
+                    )
+
+                # OTP combined with urgency or banking/KYC is HIGH risk
+                if (
+                    otp_indicator in speech_indicators
+                    and (
+                        urgency_indicator in speech_indicators
+                        or banking_indicator in speech_indicators
+                    )
+                ):
+                    content_risk_score = min(
+                        content_risk_score + 20,
+                        100
+                    )
 
             if os.path.exists(speech_audio_path):
 
@@ -245,7 +271,7 @@ def analyze_voice(audio_path):
             )
 
         # Keep score between 0 and 100.
-                # Combine acoustic risk with spoken-content risk
+        # Combine acoustic risk with spoken-content risk
         risk_score = min(
             round(risk_score + content_risk_score),
             100
@@ -253,10 +279,13 @@ def analyze_voice(audio_path):
 
         # Add speech-based indicators to the result
         for indicator in speech_indicators:
+
             if indicator not in indicators:
+
                 indicators.append(
                     "Speech content: " + indicator
                 )
+
         # ============================================
         # 4. RISK LEVEL
         # ============================================
@@ -344,6 +373,12 @@ def analyze_voice(audio_path):
 
             "indicators": indicators,
 
+            "spoken_text": spoken_text,
+
+            "speech_indicators": speech_indicators,
+
+            "content_risk_score": content_risk_score,
+
             "recommendation": recommendation,
 
             "disclaimer": (
@@ -366,6 +401,7 @@ def analyze_voice(audio_path):
             converted_audio_path
             and os.path.exists(converted_audio_path)
         ):
+
             os.remove(converted_audio_path)
 
 
