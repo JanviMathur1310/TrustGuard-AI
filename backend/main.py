@@ -96,7 +96,7 @@ async def analyze_voice_endpoint(file: UploadFile = File(...)):
             "status": "error",
             "message": (
                 "Unsupported audio format. "
-                "Please upload WAV, MP3, OGG, or FLAC."
+                "Please upload WAV, MP3, OGG, FLAC, or WEBM."
             )
         }
 

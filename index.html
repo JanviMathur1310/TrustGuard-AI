@@ -231,6 +231,81 @@
         </div>
 
     </div>
+    <!-- =====================================================
+     INCOMING CALL PROTECTION
+====================================================== -->
+
+<div class="card voice-call-card">
+
+    <h2>📞 Incoming Call Protection</h2>
+
+    <p>
+        Simulate an unknown caller and let TrustGuard AI
+        analyze the caller's voice for possible impersonation.
+    </p>
+
+    <div class="caller-info">
+
+        <h3>📱 Unknown Caller</h3>
+
+        <p>
+            <strong>Number:</strong>
+            +91 XXXXX XXXXX
+        </p>
+
+        <p id="callStatus">
+            📞 Incoming call detected
+        </p>
+
+    </div>
+
+    <button
+        type="button"
+        onclick="startVoiceCallProtection()"
+    >
+        📞 Analyze Incoming Call
+    </button>
+
+    <div
+        id="voiceCallProtection"
+        class="voice-call-protection hidden"
+    >
+
+        <p id="voiceCallStatus">
+            🎙️ Waiting for caller voice...
+        </p>
+
+        <button
+            type="button"
+            id="callRecordButton"
+            onclick="startCallVoiceRecording()"
+        >
+            🎙️ Start Caller Analysis
+        </button>
+
+        <button
+            type="button"
+            id="callStopButton"
+            onclick="stopCallVoiceRecording()"
+            disabled
+        >
+            ⏹️ Stop & Analyze
+        </button>
+
+        <audio
+            id="callRecordedAudio"
+            controls
+            class="hidden"
+        ></audio>
+
+        <div
+            id="voiceCallResult"
+            class="voice-call-result hidden"
+        ></div>
+
+    </div>
+
+</div>
 
 
     <!-- =====================================================

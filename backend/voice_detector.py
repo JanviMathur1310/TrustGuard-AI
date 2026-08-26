@@ -66,66 +66,65 @@ def analyze_voice(audio_path):
             np.std(rms)
         )
 
-        # ============================================
+               # ============================================
         # 3. PROTOTYPE IMPERSONATION RISK SCORING
         # ============================================
 
         risk_score = 0
-
         indicators = []
 
-        # --------------------------------------------
-        # Short audio
-        # --------------------------------------------
-
+        # Short recordings increase uncertainty,
+        # but should not automatically mean high risk.
         if duration < 2:
-            risk_score += 15
-            indicators.append(
-                "Very short audio sample"
-            )
-
-        # --------------------------------------------
-        # Low frequency variation
-        # --------------------------------------------
-
-        if zero_crossing_rate < 0.03:
-            risk_score += 20
-            indicators.append(
-                "Low voice-frequency variation"
-            )
-
-        # --------------------------------------------
-        # Unusual spectral characteristics
-        # --------------------------------------------
-
-        if average_centroid < 250:
-            risk_score += 15
-            indicators.append(
-                "Unusual spectral characteristics"
-            )
-
-        # --------------------------------------------
-        # Low natural energy variation
-        # --------------------------------------------
-
-        if energy_variation < 0.01:
-            risk_score += 20
-            indicators.append(
-                "Low natural energy variation"
-            )
-
-        # --------------------------------------------
-        # Extremely low energy
-        # --------------------------------------------
-
-        if average_energy < 0.02:
             risk_score += 10
-            indicators.append(
-                "Unusually low audio energy"
-            )
+            indicators.append("Very short audio sample")
 
-        # Keep score between 0 and 100
-        risk_score = min(risk_score, 100)
+        elif duration < 4:
+            risk_score += 5
+
+
+        # Very low ZCR can indicate limited acoustic variation.
+        if zero_crossing_rate < 0.02:
+            risk_score += 15
+            indicators.append("Very low voice-frequency variation")
+
+        elif zero_crossing_rate < 0.03:
+            risk_score += 8
+            indicators.append("Low voice-frequency variation")
+
+
+        # Spectral characteristics.
+        if average_centroid < 150:
+            risk_score += 15
+            indicators.append("Very unusual spectral characteristics")
+
+        elif average_centroid < 250:
+            risk_score += 7
+            indicators.append("Unusual spectral characteristics")
+
+
+        # Energy variation.
+        if energy_variation < 0.003:
+            risk_score += 20
+            indicators.append("Very low natural energy variation")
+
+        elif energy_variation < 0.01:
+            risk_score += 10
+            indicators.append("Low natural energy variation")
+
+
+        # Extremely low energy.
+        if average_energy < 0.005:
+            risk_score += 15
+            indicators.append("Extremely low audio energy")
+
+        elif average_energy < 0.02:
+            risk_score += 7
+            indicators.append("Low audio energy")
+
+
+        # Keep score between 0 and 100.
+        risk_score = min(round(risk_score), 100)
 
         # ============================================
         # 4. RISK LEVEL

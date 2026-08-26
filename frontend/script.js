@@ -1806,31 +1806,31 @@ async function analyzeVoice() {
     }
     
 
-    const fileName =
-        file.name.toLowerCase();
+   const fileName =
+    file.name.toLowerCase();
 
-    const allowedExtensions = [
-        ".wav",
-        ".mp3",
-        ".ogg",
-        ".flac"
-    ];
+const allowedExtensions = [
+    ".wav",
+    ".mp3",
+    ".ogg",
+    ".flac",
+    ".webm"
+];
 
-    const validExtension =
-        allowedExtensions.some(
-            extension =>
-                fileName.endsWith(extension)
-        );
+const validExtension =
+    allowedExtensions.some(
+        extension =>
+            fileName.endsWith(extension)
+    );
 
-    if (!validExtension) {
+if (!validExtension) {
 
-        alert(
-            "Please select a WAV, MP3, OGG, or FLAC file."
-        );
+    alert(
+        "Please select a WAV, MP3, OGG, FLAC, or WEBM file."
+    );
 
-        return;
-    }
-
+    return;
+}
     const voiceResult =
         getElement("voiceResult");
 
@@ -2977,10 +2977,22 @@ function createVoiceCallProtectionUI() {
         </div>
 
         <button
-            onclick="simulateIncomingVoiceCall()"
-        >
-            📞 Simulate Incoming Call
-        </button>
+    onclick="startVoiceRecording()"
+>
+    🎙️ Start Caller Analysis
+</button>
+
+<button
+    onclick="stopAndAnalyzeCallerVoice()"
+>
+    ⏹️ Stop & Analyze Caller
+</button>
+
+<button
+    onclick="simulateIncomingVoiceCall()"
+>
+    📞 Simulate Using Selected Voice
+</button>
 
         <div
             id="voiceCallResult"
@@ -3449,5 +3461,309 @@ function stopVoiceRecording() {
         mediaRecorder.stream.getTracks().forEach(track => {
             track.stop();
         });
+    }
+}
+// ============================================================
+// ANALYZE RECORDED CALLER VOICE
+// ============================================================
+
+async function analyzeRecordedCallerVoice() {
+
+    if (!recordedVoiceFile) {
+        alert("Please record the caller's voice first.");
+        return;
+    }
+
+    const status =
+        document.getElementById("voiceCallStatus");
+
+    const resultBox =
+        document.getElementById("voiceCallResult");
+
+    if (status) {
+        status.innerHTML = `
+            🟡 <strong>ANALYZING CALLER VOICE...</strong><br>
+            🧠 TrustGuard AI is checking the voice for
+            impersonation risk.
+        `;
+    }
+
+    if (resultBox) {
+        resultBox.classList.remove("hidden");
+
+        resultBox.innerHTML = `
+            <p>🧠 Analyzing caller voice...</p>
+        `;
+    }
+
+    try {
+
+        const formData = new FormData();
+
+        formData.append(
+            "file",
+            recordedVoiceFile,
+            recordedVoiceFile.name
+        );
+
+        const response = await fetch(
+            VOICE_ENDPOINT,
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const result = await response.json();
+
+        console.log(
+            "Caller voice analysis:",
+            result
+        );
+
+        if (!response.ok ||
+            result.status !== "success") {
+
+            throw new Error(
+                result.message ||
+                "Voice analysis failed."
+            );
+        }
+
+        // Store result for existing call-protection system
+        lastVoiceResult = result;
+
+        const score = normalizeScore(
+            result.impersonation_risk_score
+        );
+
+        const level = getRiskLevel(score);
+
+        // ====================================================
+        // HIGH RISK
+        // ====================================================
+
+        if (level === "HIGH") {
+
+            if (status) {
+                status.innerHTML = `
+                    🔴 <strong>
+                    HIGH-RISK CALL DETECTED
+                    </strong><br>
+                    🚨 Possible voice impersonation detected.
+                `;
+            }
+
+            if (resultBox) {
+
+                resultBox.innerHTML = `
+                    <div class="voice-call-danger">
+
+                        <h3>
+                            🚨 POSSIBLE VOICE IMPERSONATION
+                        </h3>
+
+                        <p>
+                            <strong>Caller Risk:</strong>
+                            ${score}/100
+                        </p>
+
+                        <p>
+                            <strong>Risk Level:</strong>
+                            🔴 HIGH
+                        </p>
+
+                        <p>
+                            The caller's voice contains
+                            suspicious acoustic characteristics.
+                        </p>
+
+                        <p>
+                            ⚠️ Do not share OTPs, passwords,
+                            PINs, banking details or money.
+                        </p>
+
+                        <button
+                            onclick="endProtectedVoiceCall()"
+                        >
+                            🛑 End / Block Call
+                        </button>
+
+                        <button
+                            onclick="verifyVoiceCaller()"
+                        >
+                            🔍 Verify Caller
+                        </button>
+
+                    </div>
+                `;
+            }
+
+            // Automatically block high-risk calls
+            setTimeout(() => {
+                endProtectedVoiceCall();
+            }, 3000);
+
+        }
+
+        // ====================================================
+        // MEDIUM RISK
+        // ====================================================
+
+        else if (level === "MEDIUM") {
+
+            if (status) {
+                status.innerHTML = `
+                    🟡 <strong>
+                    SUSPICIOUS CALL DETECTED
+                    </strong><br>
+                    ⚠️ Verify the caller independently.
+                `;
+            }
+
+            if (resultBox) {
+
+                resultBox.innerHTML = `
+                    <div class="voice-call-warning-box">
+
+                        <h3>
+                            ⚠️ SUSPICIOUS CALL
+                        </h3>
+
+                        <p>
+                            <strong>Caller Risk:</strong>
+                            ${score}/100
+                        </p>
+
+                        <p>
+                            <strong>Risk Level:</strong>
+                            🟡 MEDIUM
+                        </p>
+
+                        <p>
+                            Some suspicious acoustic
+                            characteristics were detected.
+                        </p>
+
+                        <button
+                            onclick="verifyVoiceCaller()"
+                        >
+                            🔍 Verify Caller
+                        </button>
+
+                        <button
+                            onclick="endProtectedVoiceCall()"
+                        >
+                            🛑 End Call
+                        </button>
+
+                    </div>
+                `;
+            }
+
+        }
+
+        // ====================================================
+        // LOW RISK
+        // ====================================================
+
+        else {
+
+            if (status) {
+                status.innerHTML = `
+                    🟢 <strong>
+                    CALL APPEARS LOW RISK
+                    </strong><br>
+                    ✅ No strong suspicious acoustic
+                    indicators detected.
+                `;
+            }
+
+            if (resultBox) {
+
+                resultBox.innerHTML = `
+                    <div class="voice-call-safe">
+
+                        <h3>
+                            🟢 CALL APPEARS SAFE
+                        </h3>
+
+                        <p>
+                            <strong>Caller Risk:</strong>
+                            ${score}/100
+                        </p>
+
+                        <p>
+                            <strong>Risk Level:</strong>
+                            🟢 LOW
+                        </p>
+
+                        <button
+                            onclick="continueProtectedCall()"
+                        >
+                            📞 Continue Call
+                        </button>
+
+                    </div>
+                `;
+            }
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Caller voice analysis error:",
+            error
+        );
+
+        if (status) {
+            status.innerHTML = `
+                🔴 <strong>
+                CALL ANALYSIS FAILED
+                </strong>
+            `;
+        }
+
+        if (resultBox) {
+            resultBox.innerHTML = `
+                <p>
+                    ❌ Unable to analyze caller voice.
+                </p>
+
+                <p>
+                    ${error.message}
+                </p>
+            `;
+        }
+    }
+}
+// ============================================================
+// STOP RECORDING AND ANALYZE CALLER VOICE
+// ============================================================
+
+function stopAndAnalyzeCallerVoice() {
+
+    if (!mediaRecorder) {
+        alert("No caller voice recording is active.");
+        return;
+    }
+
+    if (mediaRecorder.state === "recording") {
+
+        mediaRecorder.stop();
+
+        mediaRecorder.stream
+            .getTracks()
+            .forEach(track => track.stop());
+
+        // Wait for MediaRecorder.onstop to create recordedVoiceFile
+        setTimeout(() => {
+            analyzeRecordedCallerVoice();
+        }, 300);
+
+    } else {
+
+        analyzeRecordedCallerVoice();
+
     }
 }
