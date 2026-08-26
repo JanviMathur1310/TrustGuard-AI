@@ -67,20 +67,58 @@
         </p>
 
 
-        <!-- AUDIO FILE -->
+       <!-- AUDIO FILE -->
 
-        <input
-            type="file"
-            id="voiceFile"
-            accept=".wav,.mp3,.ogg,.flac"
-        >
+<input
+    type="file"
+    id="voiceFile"
+    accept=".wav,.mp3,.ogg,.flac"
+>
 
+<!-- VOICE RECORDING -->
 
-        <!-- ANALYZE BUTTON -->
+<div class="voice-recorder">
 
-        <button onclick="analyzeVoice()">
-            🎙️ Analyze Voice
-        </button>
+    <h3>🎙️ Or Record a Voice</h3>
+
+    <p>
+        Record a voice sample directly using your microphone.
+    </p>
+
+    <button
+        type="button"
+        id="startRecordButton"
+        onclick="startVoiceRecording()"
+    >
+        🎙️ Start Recording
+    </button>
+
+    <button
+        type="button"
+        id="stopRecordButton"
+        onclick="stopVoiceRecording()"
+        disabled
+    >
+        ⏹️ Stop Recording
+    </button>
+
+    <p id="recordingStatus">
+        Ready to record
+    </p>
+
+    <audio
+        id="recordedAudio"
+        controls
+        class="hidden"
+    ></audio>
+
+</div>
+
+<!-- ANALYZE BUTTON -->
+
+<button onclick="analyzeVoice()">
+    🔎 Analyze Voice
+</button>
 
 
         <!-- =================================================
@@ -403,7 +441,7 @@
      JAVASCRIPT
 ====================================================== -->
 
-<script src="script.js"></script>
+<script src="frontend/script.js"></script>
 
 </body>
 
