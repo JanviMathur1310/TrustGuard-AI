@@ -4,6 +4,10 @@ import subprocess
 import numpy as np
 import librosa
 import imageio_ffmpeg
+import speech_recognition as sr
+
+from backend.detector import detect_threats
+from backend.risk_engine import calculate_risk
 
 
 def analyze_voice(audio_path):
@@ -99,6 +103,78 @@ def analyze_voice(audio_path):
         energy_variation = float(
             np.std(rms)
         )
+                # ============================================
+        # 3. SPEECH-TO-TEXT + SCAM CONTENT DETECTION
+        # ============================================
+
+        spoken_text = ""
+        speech_indicators = []
+        content_risk_score = 0
+
+        try:
+
+            recognizer = sr.Recognizer()
+
+            # Convert the analyzed audio to a temporary WAV file
+            speech_audio_path = os.path.join(
+                tempfile.gettempdir(),
+                "trustguard_speech.wav"
+            )
+
+            subprocess.run(
+                [
+                    imageio_ffmpeg.get_ffmpeg_exe(),
+                    "-y",
+                    "-i",
+                    audio_path,
+                    "-ar",
+                    "16000",
+                    "-ac",
+                    "1",
+                    speech_audio_path
+                ],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.PIPE
+            )
+
+            with sr.AudioFile(speech_audio_path) as source:
+
+                audio_data = recognizer.record(source)
+
+            try:
+
+                spoken_text = recognizer.recognize_google(
+                    audio_data
+                )
+
+            except sr.UnknownValueError:
+
+                spoken_text = ""
+
+            except sr.RequestError:
+
+                spoken_text = ""
+
+            if spoken_text:
+
+                speech_indicators = detect_threats(
+                    spoken_text
+                )
+
+                content_risk_score, _ = calculate_risk(
+                    speech_indicators
+                )
+
+            if os.path.exists(speech_audio_path):
+
+                os.remove(speech_audio_path)
+
+        except Exception:
+
+            spoken_text = ""
+            speech_indicators = []
+            content_risk_score = 0
 
         # ============================================
         # 3. PROTOTYPE IMPERSONATION RISK SCORING
@@ -169,8 +245,18 @@ def analyze_voice(audio_path):
             )
 
         # Keep score between 0 and 100.
-        risk_score = min(round(risk_score), 100)
+                # Combine acoustic risk with spoken-content risk
+        risk_score = min(
+            round(risk_score + content_risk_score),
+            100
+        )
 
+        # Add speech-based indicators to the result
+        for indicator in speech_indicators:
+            if indicator not in indicators:
+                indicators.append(
+                    "Speech content: " + indicator
+                )
         # ============================================
         # 4. RISK LEVEL
         # ============================================
