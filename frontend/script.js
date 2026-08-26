@@ -3022,12 +3022,21 @@ function simulateIncomingVoiceCall() {
         document.getElementById("voiceCallStatus");
 
 
-    if (!fileInput ||
-        !fileInput.files ||
-        fileInput.files.length === 0) {
+    // Use uploaded voice OR recorded voice
+    const file =
+        (
+            fileInput &&
+            fileInput.files &&
+            fileInput.files.length > 0
+        )
+            ? fileInput.files[0]
+            : recordedVoiceFile;
+
+
+    if (!file) {
 
         alert(
-            "Please select a voice recording first."
+            "Please upload or record a voice recording first."
         );
 
         return;
@@ -3044,16 +3053,14 @@ function simulateIncomingVoiceCall() {
     }
 
 
-    const file =
-        fileInput.files[0];
-
     const score =
         normalizeScore(
+            lastVoiceResult.impersonation_risk_score ??
             lastVoiceResult.risk_score
         );
 
-    const level = getRiskLevel(score);
-
+    const level =
+        getRiskLevel(score);
     if (status) {
 
         status.innerHTML = `
