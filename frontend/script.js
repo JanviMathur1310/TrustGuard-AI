@@ -3011,6 +3011,7 @@ function createVoiceCallProtectionUI() {
 // ============================================================
 
 function simulateIncomingVoiceCall() {
+     console.log("SIMULATE BUTTON CLICKED");
 
     const fileInput =
         document.getElementById("voiceFile");
