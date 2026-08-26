@@ -1,6 +1,9 @@
 import os
+import tempfile
+import subprocess
 import numpy as np
 import librosa
+import imageio_ffmpeg
 
 
 def analyze_voice(audio_path):
@@ -21,11 +24,42 @@ def analyze_voice(audio_path):
             "message": "Audio file not found."
         }
 
+    converted_audio_path = None
+
     try:
 
         # ============================================
-        # 1. LOAD AUDIO
+        # LOAD AUDIO
+        # Supports WAV, MP3, OGG, FLAC and WEBM
         # ============================================
+
+        if audio_path.lower().endswith(".webm"):
+
+            ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
+
+            converted_audio_path = os.path.join(
+                tempfile.gettempdir(),
+                "trustguard_converted.wav"
+            )
+
+            subprocess.run(
+                [
+                    ffmpeg,
+                    "-y",
+                    "-i",
+                    audio_path,
+                    "-ar",
+                    "16000",
+                    "-ac",
+                    "1",
+                    converted_audio_path
+                ],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.PIPE
+            )
+
+            audio_path = converted_audio_path
 
         audio, sample_rate = librosa.load(
             audio_path,
@@ -66,7 +100,7 @@ def analyze_voice(audio_path):
             np.std(rms)
         )
 
-               # ============================================
+        # ============================================
         # 3. PROTOTYPE IMPERSONATION RISK SCORING
         # ============================================
 
@@ -82,46 +116,57 @@ def analyze_voice(audio_path):
         elif duration < 4:
             risk_score += 5
 
-
         # Very low ZCR can indicate limited acoustic variation.
         if zero_crossing_rate < 0.02:
             risk_score += 15
-            indicators.append("Very low voice-frequency variation")
+            indicators.append(
+                "Very low voice-frequency variation"
+            )
 
         elif zero_crossing_rate < 0.03:
             risk_score += 8
-            indicators.append("Low voice-frequency variation")
-
+            indicators.append(
+                "Low voice-frequency variation"
+            )
 
         # Spectral characteristics.
         if average_centroid < 150:
             risk_score += 15
-            indicators.append("Very unusual spectral characteristics")
+            indicators.append(
+                "Very unusual spectral characteristics"
+            )
 
         elif average_centroid < 250:
             risk_score += 7
-            indicators.append("Unusual spectral characteristics")
-
+            indicators.append(
+                "Unusual spectral characteristics"
+            )
 
         # Energy variation.
         if energy_variation < 0.003:
             risk_score += 20
-            indicators.append("Very low natural energy variation")
+            indicators.append(
+                "Very low natural energy variation"
+            )
 
         elif energy_variation < 0.01:
             risk_score += 10
-            indicators.append("Low natural energy variation")
-
+            indicators.append(
+                "Low natural energy variation"
+            )
 
         # Extremely low energy.
         if average_energy < 0.005:
             risk_score += 15
-            indicators.append("Extremely low audio energy")
+            indicators.append(
+                "Extremely low audio energy"
+            )
 
         elif average_energy < 0.02:
             risk_score += 7
-            indicators.append("Low audio energy")
-
+            indicators.append(
+                "Low audio energy"
+            )
 
         # Keep score between 0 and 100.
         risk_score = min(round(risk_score), 100)
@@ -228,6 +273,14 @@ def analyze_voice(audio_path):
             "status": "error",
             "message": str(e)
         }
+
+    finally:
+
+        if (
+            converted_audio_path
+            and os.path.exists(converted_audio_path)
+        ):
+            os.remove(converted_audio_path)
 
 
 # ================================================
