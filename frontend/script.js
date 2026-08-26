@@ -3891,6 +3891,121 @@ async function analyzeRecordedCallerVoice() {
     }
 }
 // ============================================================
+// START CALLER VOICE RECORDING
+// ============================================================
+
+async function startCallVoiceRecording() {
+
+    try {
+
+        const status =
+            document.getElementById("voiceCallStatus");
+
+        const recordButton =
+            document.getElementById("callRecordButton");
+
+        const stopButton =
+            document.getElementById("callStopButton");
+
+        const audioPlayer =
+            document.getElementById("callRecordedAudio");
+
+        const stream =
+            await navigator.mediaDevices.getUserMedia({
+                audio: true
+            });
+
+        recordedChunks = [];
+
+        mediaRecorder =
+            new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = function (event) {
+
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+
+        };
+
+        mediaRecorder.onstop = function () {
+
+            const audioBlob =
+                new Blob(recordedChunks, {
+                    type: "audio/webm"
+                });
+
+            recordedVoiceFile =
+                new File(
+                    [audioBlob],
+                    "caller_voice.webm",
+                    {
+                        type: "audio/webm"
+                    }
+                );
+
+            if (audioPlayer) {
+
+                audioPlayer.src =
+                    URL.createObjectURL(audioBlob);
+
+                audioPlayer.classList.remove("hidden");
+            }
+
+            if (status) {
+
+                status.innerHTML =
+                    "🟢 <strong>CALLER VOICE RECORDED</strong><br>" +
+                    "Ready for AI impersonation analysis.";
+            }
+
+            if (recordButton) {
+                recordButton.disabled = false;
+            }
+
+            if (stopButton) {
+                stopButton.disabled = true;
+            }
+
+        };
+
+        mediaRecorder.start();
+
+        if (recordButton) {
+            recordButton.disabled = true;
+        }
+
+        if (stopButton) {
+            stopButton.disabled = false;
+        }
+
+        if (status) {
+
+            status.innerHTML =
+                "🔴 <strong>RECORDING CALLER VOICE...</strong><br>" +
+                "Speak now for analysis.";
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Caller microphone error:",
+            error
+        );
+
+        const status =
+            document.getElementById("voiceCallStatus");
+
+        if (status) {
+
+            status.innerHTML =
+                "❌ <strong>Microphone access failed.</strong><br>" +
+                "Please allow microphone permission and try again.";
+        }
+
+    }
+}
+// ============================================================
 // STOP RECORDING AND ANALYZE CALLER VOICE
 // ============================================================
 
