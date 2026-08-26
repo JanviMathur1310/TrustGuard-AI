@@ -2977,7 +2977,7 @@ function createVoiceCallProtectionUI() {
         </div>
 
         <button
-    onclick="startVoiceRecording()"
+    onclick="startCallVoiceRecording()"
 >
     🎙️ Start Caller Analysis
 </button>
