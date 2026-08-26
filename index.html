@@ -261,7 +261,7 @@
 
     <button
         type="button"
-        onclick="startVoiceCallProtection()"
+       onclick="startVoiceRecording()"
     >
         📞 Analyze Incoming Call
     </button>
@@ -278,7 +278,7 @@
         <button
             type="button"
             id="callRecordButton"
-            onclick="startCallVoiceRecording()"
+            onclick="startVoiceRecording()"
         >
             🎙️ Start Caller Analysis
         </button>
@@ -286,7 +286,7 @@
         <button
             type="button"
             id="callStopButton"
-            onclick="stopCallVoiceRecording()"
+           onclick="stopAndAnalyzeCallerVoice()"
             disabled
         >
             ⏹️ Stop & Analyze
