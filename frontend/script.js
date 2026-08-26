@@ -4035,3 +4035,6 @@ function stopAndAnalyzeCallerVoice() {
 
     }
 }
+window.startCallVoiceRecording = startCallVoiceRecording;
+window.stopAndAnalyzeCallerVoice = stopAndAnalyzeCallerVoice;
+window.analyzeRecordedCallerVoice = analyzeRecordedCallerVoice;
