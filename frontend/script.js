@@ -1777,42 +1777,34 @@ async function analyzeVoice() {
     const fileInput =
         getElement("voiceFile");
 
-    if (!fileInput) {
-
-        alert(
-            "Voice file input was not found."
-        );
-
-        return;
-    }
-
-    if (
-        !fileInput.files ||
-        fileInput.files.length === 0
-    ) {
-
-        alert(
-            "Please select a WAV, MP3, OGG, or FLAC voice recording."
-        );
-
+    if (!fileInput && !recordedVoiceFile) {
+        alert("Voice file input was not found.");
         return;
     }
 
     const file =
-        fileInput.files[0];
+        (fileInput &&
+         fileInput.files &&
+         fileInput.files.length > 0)
+            ? fileInput.files[0]
+            : recordedVoiceFile;
 
-    if (
-        file.size >
-        MAX_VOICE_FILE_SIZE
-    ) {
-
+    if (!file) {
         alert(
-            "Voice file is too large.\n\n" +
-            "Maximum allowed size is 25 MB."
+            "Please upload a voice recording or record your voice first."
         );
-
         return;
     }
+
+        
+
+    if (file.size > MAX_VOICE_FILE_SIZE) {
+        alert(
+            "Voice file is too large.\n\nMaximum allowed size is 25 MB."
+        );
+        return;
+    }
+    
 
     const fileName =
         file.name.toLowerCase();
@@ -3383,3 +3375,79 @@ window.verifyVoiceCaller =
 
 window.continueProtectedCall =
     continueProtectedCall;
+// ============================================================
+// VOICE RECORDING
+// ============================================================
+
+let mediaRecorder = null;
+let recordedChunks = [];
+let recordedVoiceFile = null;
+
+async function startVoiceRecording() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            audio: true
+        });
+
+        recordedChunks = [];
+
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = function (event) {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        };
+
+        mediaRecorder.onstop = function () {
+            const audioBlob = new Blob(recordedChunks, {
+                type: "audio/webm"
+            });
+
+            recordedVoiceFile = new File(
+                [audioBlob],
+                "recorded_voice.webm",
+                {
+                    type: "audio/webm"
+                }
+            );
+
+            const audioURL = URL.createObjectURL(audioBlob);
+
+            const audioPlayer = document.getElementById("recordedAudio");
+            audioPlayer.src = audioURL;
+            audioPlayer.classList.remove("hidden");
+
+            document.getElementById("recordingStatus").textContent =
+                "✅ Recording ready. Click Analyze Voice.";
+
+            document.getElementById("startRecordButton").disabled = false;
+            document.getElementById("stopRecordButton").disabled = true;
+        };
+
+        mediaRecorder.start();
+
+        document.getElementById("startRecordButton").disabled = true;
+        document.getElementById("stopRecordButton").disabled = false;
+
+        document.getElementById("recordingStatus").textContent =
+            "🔴 Recording... Speak now.";
+
+    } catch (error) {
+        console.error("Microphone error:", error);
+
+        document.getElementById("recordingStatus").textContent =
+            "❌ Microphone permission denied or unavailable.";
+    }
+}
+
+
+function stopVoiceRecording() {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+
+        mediaRecorder.stream.getTracks().forEach(track => {
+            track.stop();
+        });
+    }
+}

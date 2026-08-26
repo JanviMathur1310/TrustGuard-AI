@@ -87,7 +87,7 @@ def analyze_message(request: MessageRequest):
 async def analyze_voice_endpoint(file: UploadFile = File(...)):
 
     # Supported audio formats
-    allowed_formats = [".wav", ".mp3", ".ogg", ".flac"]
+    allowed_formats = [".wav", ".mp3", ".ogg", ".flac", ".webm"]
 
     suffix = os.path.splitext(file.filename)[1].lower()
 
