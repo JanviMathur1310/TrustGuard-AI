@@ -4038,3 +4038,417 @@ function stopAndAnalyzeCallerVoice() {
 window.startCallVoiceRecording = startCallVoiceRecording;
 window.stopAndAnalyzeCallerVoice = stopAndAnalyzeCallerVoice;
 window.analyzeRecordedCallerVoice = analyzeRecordedCallerVoice;
+// =====================================================
+// 🌐 MULTILINGUAL SUPPORT FOR RURAL USERS
+// =====================================================
+
+const translations = {
+
+    en: {
+        title: "🛡️ TrustGuard AI",
+        subtitle: "AI-Powered Digital Scam Detection & Real-Time Protection",
+        language: "🌐 Language:",
+        messageTitle: "🔍 Check a Suspicious Message",
+        messagePlaceholder: "Paste a suspicious message here...",
+        analyzeMessage: "🔎 Analyze Message",
+        liveProtection: "🛡️ Start Live Protection",
+        voiceTitle: "🎙️ Voice Cloning Detection",
+        analyzeVoice: "🔎 Analyze Voice",
+        highRisk: "🔴 HIGH RISK",
+        warning: "⚠️ This may be a scam. Do not share your OTP, password or bank details.",
+        safe: "🟢 SAFE",
+        caution: "🟡 CAUTION"
+    },
+
+    hi: {
+        title: "🛡️ TrustGuard AI",
+        subtitle: "AI द्वारा डिजिटल धोखाधड़ी का पता लगाना और वास्तविक समय सुरक्षा",
+        language: "🌐 भाषा:",
+        messageTitle: "🔍 संदिग्ध संदेश की जाँच करें",
+        messagePlaceholder: "संदिग्ध संदेश यहाँ डालें...",
+        analyzeMessage: "🔎 संदेश की जाँच करें",
+        liveProtection: "🛡️ लाइव सुरक्षा शुरू करें",
+        voiceTitle: "🎙️ आवाज़ की नकल का पता लगाना",
+        analyzeVoice: "🔎 आवाज़ की जाँच करें",
+        highRisk: "🔴 उच्च जोखिम",
+        warning: "⚠️ यह धोखाधड़ी हो सकती है। अपना OTP, पासवर्ड या बैंक विवरण साझा न करें।",
+        safe: "🟢 सुरक्षित",
+        caution: "🟡 सावधान"
+    },
+
+    te: {
+        title: "🛡️ TrustGuard AI",
+        subtitle: "AI ఆధారిత డిజిటల్ మోసం గుర్తింపు మరియు రియల్ టైమ్ రక్షణ",
+        language: "🌐 భాష:",
+        messageTitle: "🔍 అనుమానాస్పద సందేశాన్ని తనిఖీ చేయండి",
+        messagePlaceholder: "అనుమానాస్పద సందేశాన్ని ఇక్కడ నమోదు చేయండి...",
+        analyzeMessage: "🔎 సందేశాన్ని తనిఖీ చేయండి",
+        liveProtection: "🛡️ లైవ్ రక్షణ ప్రారంభించండి",
+        voiceTitle: "🎙️ వాయిస్ క్లోనింగ్ గుర్తింపు",
+        analyzeVoice: "🔎 వాయిస్‌ను తనిఖీ చేయండి",
+        highRisk: "🔴 అధిక ప్రమాదం",
+        warning: "⚠️ ఇది మోసం కావచ్చు. మీ OTP, పాస్‌వర్డ్ లేదా బ్యాంక్ వివరాలను పంచుకోవద్దు.",
+        safe: "🟢 సురక్షితం",
+        caution: "🟡 జాగ్రత్త"
+    },
+
+    ta: {
+        title: "🛡️ TrustGuard AI",
+        subtitle: "AI மூலம் டிஜிட்டல் மோசடி கண்டறிதல் மற்றும் நிகழ்நேர பாதுகாப்பு",
+        language: "🌐 மொழி:",
+        messageTitle: "🔍 சந்தேகத்திற்கிடமான செய்தியைச் சரிபார்க்கவும்",
+        messagePlaceholder: "சந்தேகத்திற்கிடமான செய்தியை இங்கே உள்ளிடவும்...",
+        analyzeMessage: "🔎 செய்தியைச் சரிபார்க்கவும்",
+        liveProtection: "🛡️ நேரடி பாதுகாப்பைத் தொடங்கவும்",
+        voiceTitle: "🎙️ குரல் குளோனிங் கண்டறிதல்",
+        analyzeVoice: "🔎 குரலைச் சரிபார்க்கவும்",
+        highRisk: "🔴 அதிக ஆபத்து",
+        warning: "⚠️ இது மோசடியாக இருக்கலாம். உங்கள் OTP, கடவுச்சொல் அல்லது வங்கி விவரங்களை பகிர வேண்டாம்.",
+        safe: "🟢 பாதுகாப்பானது",
+        caution: "🟡 எச்சரிக்கை"
+    },
+
+    kn: {
+        title: "🛡️ TrustGuard AI",
+        subtitle: "AI ಆಧಾರಿತ ಡಿಜಿಟಲ್ ವಂಚನೆ ಪತ್ತೆ ಮತ್ತು ನೈಜ-ಸಮಯದ ರಕ್ಷಣೆ",
+        language: "🌐 ಭಾಷೆ:",
+        messageTitle: "🔍 ಅನುಮಾನಾಸ್ಪದ ಸಂದೇಶವನ್ನು ಪರಿಶೀಲಿಸಿ",
+        messagePlaceholder: "ಅನುಮಾನಾಸ್ಪದ ಸಂದೇಶವನ್ನು ಇಲ್ಲಿ ನಮೂದಿಸಿ...",
+        analyzeMessage: "🔎 ಸಂದೇಶವನ್ನು ಪರಿಶೀಲಿಸಿ",
+        liveProtection: "🛡️ ಲೈವ್ ರಕ್ಷಣೆಯನ್ನು ಪ್ರಾರಂಭಿಸಿ",
+        voiceTitle: "🎙️ ಧ್ವನಿ ಕ್ಲೋನಿಂಗ್ ಪತ್ತೆ",
+        analyzeVoice: "🔎 ಧ್ವನಿಯನ್ನು ಪರಿಶೀಲಿಸಿ",
+        highRisk: "🔴 ಹೆಚ್ಚಿನ ಅಪಾಯ",
+        warning: "⚠️ ಇದು ವಂಚನೆಯಾಗಿರಬಹುದು. ನಿಮ್ಮ OTP, ಪಾಸ್‌ವರ್ಡ್ ಅಥವಾ ಬ್ಯಾಂಕ್ ವಿವರಗಳನ್ನು ಹಂಚಿಕೊಳ್ಳಬೇಡಿ.",
+        safe: "🟢 ಸುರಕ್ಷಿತ",
+        caution: "🟡 ಎಚ್ಚರಿಕೆ"
+    },
+
+    mr: {
+        title: "🛡️ TrustGuard AI",
+        subtitle: "AI द्वारे डिजिटल फसवणूक शोध आणि रिअल-टाइम संरक्षण",
+        language: "🌐 भाषा:",
+        messageTitle: "🔍 संशयास्पद संदेश तपासा",
+        messagePlaceholder: "संशयास्पद संदेश येथे टाका...",
+        analyzeMessage: "🔎 संदेश तपासा",
+        liveProtection: "🛡️ लाइव्ह संरक्षण सुरू करा",
+        voiceTitle: "🎙️ आवाज क्लोनिंग शोध",
+        analyzeVoice: "🔎 आवाज तपासा",
+        highRisk: "🔴 उच्च धोका",
+        warning: "⚠️ हा संदेश फसवणूक असू शकतो. तुमचा OTP, पासवर्ड किंवा बँक तपशील शेअर करू नका.",
+        safe: "🟢 सुरक्षित",
+        caution: "🟡 सावध"
+    },
+
+    bn: {
+        title: "🛡️ TrustGuard AI",
+        subtitle: "AI দ্বারা ডিজিটাল প্রতারণা শনাক্তকরণ এবং রিয়েল-টাইম সুরক্ষা",
+        language: "🌐 ভাষা:",
+        messageTitle: "🔍 সন্দেহজনক বার্তা পরীক্ষা করুন",
+        messagePlaceholder: "সন্দেহজনক বার্তা এখানে লিখুন...",
+        analyzeMessage: "🔎 বার্তা পরীক্ষা করুন",
+        liveProtection: "🛡️ লাইভ সুরক্ষা শুরু করুন",
+        voiceTitle: "🎙️ ভয়েস ক্লোনিং শনাক্তকরণ",
+        analyzeVoice: "🔎 ভয়েস পরীক্ষা করুন",
+        highRisk: "🔴 উচ্চ ঝুঁকি",
+        warning: "⚠️ এটি প্রতারণা হতে পারে। আপনার OTP, পাসওয়ার্ড বা ব্যাংকের তথ্য শেয়ার করবেন না।",
+        safe: "🟢 নিরাপদ",
+        caution: "🟡 সতর্কতা"
+    }
+};
+
+
+// Change the interface language
+function changeLanguage() {
+
+    const language =
+        document.getElementById("languageSelect").value;
+
+    const t = translations[language];
+
+    // Header
+    document.getElementById("appTitle").textContent = t.title;
+    document.getElementById("appSubtitle").textContent = t.subtitle;
+
+    // Language label
+    const languageLabel =
+        document.querySelector(".language-selector label");
+
+    if (languageLabel) {
+        languageLabel.textContent = t.language;
+    }
+
+    // Message analyzer
+    const messageTitle =
+        document.querySelector(".card h2");
+
+    if (messageTitle) {
+        messageTitle.textContent = t.messageTitle;
+    }
+
+    const messageBox =
+        document.getElementById("message");
+
+    if (messageBox) {
+        messageBox.placeholder =
+            t.messagePlaceholder;
+    }
+
+    // Message analyze button
+    const messageButtons =
+        document.querySelectorAll(".card button");
+
+    if (messageButtons.length > 0) {
+        messageButtons[0].textContent =
+            t.analyzeMessage;
+    }
+
+    // Live protection button
+    const liveButton =
+        document.querySelector(".live-button");
+
+    if (liveButton) {
+        liveButton.textContent =
+            t.liveProtection;
+    }
+
+    // Voice title
+    const voiceCard =
+        document.querySelector(".voice-card");
+
+    if (voiceCard) {
+
+        const voiceTitle =
+            voiceCard.querySelector("h2");
+
+        if (voiceTitle) {
+            voiceTitle.textContent =
+                t.voiceTitle;
+        }
+    }
+
+    // Voice analyze button
+    const voiceButtons =
+        document.querySelectorAll(".voice-card button");
+
+    if (voiceButtons.length > 0) {
+
+        const lastButton =
+            voiceCard.querySelector(
+                'button[onclick="analyzeVoice()"]'
+            );
+
+        if (lastButton) {
+            lastButton.textContent =
+                t.analyzeVoice;
+        }
+    }
+
+    // Save selected language
+    localStorage.setItem(
+        "trustguardLanguage",
+        language
+    );
+}
+
+
+// Load saved language when page opens
+document.addEventListener("DOMContentLoaded", function () {
+
+    const savedLanguage =
+        localStorage.getItem(
+            "trustguardLanguage"
+        );
+
+    if (savedLanguage) {
+
+        const selector =
+            document.getElementById(
+                "languageSelect"
+            );
+
+        if (selector) {
+
+            selector.value =
+                savedLanguage;
+
+            changeLanguage();
+        }
+    }
+});
+// ============================================================
+// 🌐 TRUSTGUARD AI - MULTILINGUAL RESULT SUPPORT
+// ============================================================
+
+const resultTranslations = {
+
+    en: {
+        safe: "🟢 SAFE",
+        caution: "🟡 CAUTION",
+        high: "🔴 HIGH RISK",
+
+        safeRecommendation:
+            "This message appears safe. Still, never share OTPs, passwords or banking details.",
+
+        cautionRecommendation:
+            "Be careful with this message. Verify the sender before clicking links or sharing information.",
+
+        highRecommendation:
+            "⚠️ This message may be a scam. Do not click suspicious links or share OTP, PIN, password or bank details."
+    },
+
+    hi: {
+        safe: "🟢 सुरक्षित",
+        caution: "🟡 सावधान",
+        high: "🔴 उच्च जोखिम",
+
+        safeRecommendation:
+            "यह संदेश सुरक्षित दिखाई देता है। फिर भी OTP, पासवर्ड या बैंक की जानकारी साझा न करें।",
+
+        cautionRecommendation:
+            "इस संदेश से सावधान रहें। लिंक पर क्लिक करने या जानकारी साझा करने से पहले भेजने वाले की पुष्टि करें।",
+
+        highRecommendation:
+            "⚠️ यह संदेश धोखाधड़ी हो सकता है। संदिग्ध लिंक पर क्लिक न करें और OTP, PIN, पासवर्ड या बैंक विवरण साझा न करें।"
+    },
+
+    te: {
+        safe: "🟢 సురక్షితం",
+        caution: "🟡 జాగ్రత్త",
+        high: "🔴 అధిక ప్రమాదం",
+
+        safeRecommendation:
+            "ఈ సందేశం సురక్షితంగా కనిపిస్తోంది. అయినప్పటికీ OTP, పాస్‌వర్డ్ లేదా బ్యాంక్ వివరాలను పంచుకోవద్దు.",
+
+        cautionRecommendation:
+            "ఈ సందేశంతో జాగ్రత్తగా ఉండండి. లింక్‌పై క్లిక్ చేయడానికి లేదా సమాచారాన్ని పంచుకోవడానికి ముందు పంపిన వ్యక్తిని నిర్ధారించుకోండి.",
+
+        highRecommendation:
+            "⚠️ ఈ సందేశం మోసపూరితమైనది కావచ్చు. అనుమానాస్పద లింక్‌లపై క్లిక్ చేయవద్దు మరియు OTP, PIN, పాస్‌వర్డ్ లేదా బ్యాంక్ వివరాలను పంచుకోవద్దు."
+    },
+
+    ta: {
+        safe: "🟢 பாதுகாப்பானது",
+        caution: "🟡 எச்சரிக்கை",
+        high: "🔴 அதிக ஆபத்து",
+
+        safeRecommendation:
+            "இந்த செய்தி பாதுகாப்பானதாகத் தெரிகிறது. இருப்பினும் OTP, கடவுச்சொல் அல்லது வங்கி விவரங்களைப் பகிர வேண்டாம்.",
+
+        cautionRecommendation:
+            "இந்த செய்தியில் கவனமாக இருங்கள். இணைப்பைக் கிளிக் செய்வதற்கு முன் அனுப்பியவரை சரிபார்க்கவும்.",
+
+        highRecommendation:
+            "⚠️ இந்த செய்தி மோசடியாக இருக்கலாம். சந்தேகமான இணைப்புகளைக் கிளிக் செய்ய வேண்டாம் மற்றும் OTP, PIN, கடவுச்சொல் அல்லது வங்கி விவரங்களைப் பகிர வேண்டாம்."
+    },
+
+    kn: {
+        safe: "🟢 ಸುರಕ್ಷಿತ",
+        caution: "🟡 ಎಚ್ಚರಿಕೆ",
+        high: "🔴 ಹೆಚ್ಚಿನ ಅಪಾಯ",
+
+        safeRecommendation:
+            "ಈ ಸಂದೇಶವು ಸುರಕ್ಷಿತವಾಗಿ ಕಾಣುತ್ತದೆ. ಆದರೂ OTP, ಪಾಸ್‌ವರ್ಡ್ ಅಥವಾ ಬ್ಯಾಂಕ್ ವಿವರಗಳನ್ನು ಹಂಚಿಕೊಳ್ಳಬೇಡಿ.",
+
+        cautionRecommendation:
+            "ಈ ಸಂದೇಶದ ಬಗ್ಗೆ ಎಚ್ಚರಿಕೆಯಿಂದಿರಿ. ಲಿಂಕ್ ಕ್ಲಿಕ್ ಮಾಡುವ ಮೊದಲು ಕಳುಹಿಸಿದವರನ್ನು ಪರಿಶೀಲಿಸಿ.",
+
+        highRecommendation:
+            "⚠️ ಈ ಸಂದೇಶವು ವಂಚನೆಯಾಗಿರಬಹುದು. ಅನುಮಾನಾಸ್ಪದ ಲಿಂಕ್‌ಗಳನ್ನು ಕ್ಲಿಕ್ ಮಾಡಬೇಡಿ ಮತ್ತು OTP, PIN, ಪಾಸ್‌ವರ್ಡ್ ಅಥವಾ ಬ್ಯಾಂಕ್ ವಿವರಗಳನ್ನು ಹಂಚಿಕೊಳ್ಳಬೇಡಿ."
+    },
+
+    mr: {
+        safe: "🟢 सुरक्षित",
+        caution: "🟡 सावधान",
+        high: "🔴 उच्च धोका",
+
+        safeRecommendation:
+            "हा संदेश सुरक्षित दिसत आहे. तरीही OTP, पासवर्ड किंवा बँक तपशील शेअर करू नका.",
+
+        cautionRecommendation:
+            "या संदेशाबाबत सावध रहा. लिंकवर क्लिक करण्यापूर्वी पाठवणाऱ्याची खात्री करा.",
+
+        highRecommendation:
+            "⚠️ हा संदेश फसवणूक असू शकतो. संशयास्पद लिंकवर क्लिक करू नका आणि OTP, PIN, पासवर्ड किंवा बँक तपशील शेअर करू नका."
+    },
+
+    bn: {
+        safe: "🟢 নিরাপদ",
+        caution: "🟡 সতর্কতা",
+        high: "🔴 উচ্চ ঝুঁকি",
+
+        safeRecommendation:
+            "এই বার্তাটি নিরাপদ বলে মনে হচ্ছে। তবুও OTP, পাসওয়ার্ড বা ব্যাংকের তথ্য শেয়ার করবেন না।",
+
+        cautionRecommendation:
+            "এই বার্তাটি সম্পর্কে সতর্ক থাকুন। লিঙ্কে ক্লিক করার আগে প্রেরককে যাচাই করুন।",
+
+        highRecommendation:
+            "⚠️ এই বার্তাটি প্রতারণা হতে পারে। সন্দেহজনক লিঙ্কে ক্লিক করবেন না এবং OTP, PIN, পাসওয়ার্ড বা ব্যাংকের তথ্য শেয়ার করবেন না।"
+    }
+};
+
+
+// Get selected language
+function getSelectedLanguage() {
+
+    return localStorage.getItem("trustguardLanguage") || "en";
+
+}
+
+
+// Translate risk level
+function translateRiskLevel(level) {
+
+    const lang = getSelectedLanguage();
+
+    const t = resultTranslations[lang] || resultTranslations.en;
+
+    if (!level) return level;
+
+    const value = level.toString().toLowerCase();
+
+    if (value.includes("high")) {
+        return t.high;
+    }
+
+    if (value.includes("medium") || value.includes("moderate")) {
+        return t.caution;
+    }
+
+    if (value.includes("low") || value.includes("safe")) {
+        return t.safe;
+    }
+
+    return level;
+}
+
+
+// Translate recommendation
+function getTranslatedRecommendation(level) {
+
+    const lang = getSelectedLanguage();
+
+    const t = resultTranslations[lang] || resultTranslations.en;
+
+    if (!level) {
+        return t.cautionRecommendation;
+    }
+
+    const value = level.toString().toLowerCase();
+
+    if (value.includes("high")) {
+        return t.highRecommendation;
+    }
+
+    if (value.includes("medium") || value.includes("moderate")) {
+        return t.cautionRecommendation;
+    }
+
+    if (value.includes("low") || value.includes("safe")) {
+        return t.safeRecommendation;
+    }
+
+    return t.cautionRecommendation;
+}
+
