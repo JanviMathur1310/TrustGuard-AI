@@ -2938,6 +2938,7 @@ function startVoiceCallProtection() {
     if (!callCard) {
 
         createVoiceCallProtectionUI();
+         changeLanguage();
     }
 
     const card =
@@ -3041,6 +3042,7 @@ function createVoiceCallProtectionUI() {
     `;
 
     container.appendChild(card);
+    changeLanguage();
 }
 
 
@@ -3410,6 +3412,7 @@ document.addEventListener(
     function () {
 
         createVoiceCallProtectionUI();
+        changeLanguage();
 
     }
 );
