@@ -3042,6 +3042,7 @@ function createVoiceCallProtectionUI() {
     `;
 
     container.appendChild(card);
+    
     changeLanguage();
 }
 
@@ -4232,37 +4233,18 @@ if (voiceCallInstruction) {
         t.voiceCallInstruction;
 }
 
-    // Voice title
-    const voiceCard =
-        document.querySelector(".voice-call-card");
-
-    if (voiceCard) {
-
-        const voiceTitle =
-            voiceCard.querySelector("h2");
-
-        if (voiceTitle) {
-            voiceTitle.textContent =
-                t.voiceTitle;
-        }
-    }
-
+   
     // Voice analyze button
-    const voiceButtons =
-        document.querySelectorAll(".voice-card button");
+    // Voice analyze button
+const voiceAnalyzeButton =
+    document.querySelector(
+        'button[onclick="analyzeVoice()"]'
+    );
 
-    if (voiceButtons.length > 0) {
-
-        const lastButton =
-            voiceCard.querySelector(
-                'button[onclick="analyzeVoice()"]'
-            );
-
-        if (lastButton) {
-            lastButton.textContent =
-                t.analyzeVoice;
-        }
-    }
+if (voiceAnalyzeButton) {
+    voiceAnalyzeButton.textContent =
+        t.analyzeVoice;
+}
 
     // Save selected language
     localStorage.setItem(

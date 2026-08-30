@@ -267,13 +267,70 @@ function applyLanguage(lang) {
     // VOICE ANALYSIS RESULT
     // --------------------------------------------------------
 
-    translateVoiceResult(t);
+        translateVoiceResult(t);
 
     // --------------------------------------------------------
     // MESSAGE RESULT LABELS
     // --------------------------------------------------------
 
     translateResultLabels(t);
+
+
+    // --------------------------------------------------------
+    // AI VOICE CALL PROTECTION
+    // --------------------------------------------------------
+
+    const voiceCallCard =
+        document.getElementById("voiceCallProtection");
+
+    if (voiceCallCard) {
+
+        const voiceCallTitle =
+            document.getElementById("voiceCallTitle");
+
+        if (voiceCallTitle)
+            voiceCallTitle.textContent = t.voiceCallTitle;
+        const voiceCallDescription =
+            document.getElementById("voiceCallDescription");
+
+        if (voiceCallDescription)
+              voiceCallDescription.textContent = t.voiceCallDescription;
+
+        const voiceCallReady =
+            document.getElementById("voiceCallReady");
+
+        if (voiceCallReady)
+            voiceCallReady.textContent = t.voiceCallReady;
+
+        const voiceCallStatus =
+            document.getElementById("voiceCallStatus");
+
+        if (voiceCallStatus) {
+            voiceCallStatus.innerHTML =
+                "🟢 <strong id='voiceCallReady'>" +
+                t.voiceCallReady +
+                "</strong><br>" +
+                t.voiceCallInstruction;
+        }
+
+        const startCaller =
+            document.getElementById("startCallerAnalysisBtn");
+
+        if (startCaller)
+            startCaller.textContent = t.startCallerAnalysis;
+
+        const stopCaller =
+            document.getElementById("stopCallerAnalysisBtn");
+
+        if (stopCaller)
+            stopCaller.textContent = t.stopCallerAnalysis;
+
+        const simulateCaller =
+            document.getElementById("simulateCallerBtn");
+
+        if (simulateCaller)
+            simulateCaller.textContent = t.simulateCaller;
+    }
 }
 
 
