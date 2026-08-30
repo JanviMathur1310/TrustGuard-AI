@@ -2989,7 +2989,7 @@ function createVoiceCallProtectionUI() {
             📞 AI Voice Call Protection
         </h2> 
 
-        <p>
+        <pid="voiceCallDescription">
             TrustGuard AI can simulate real-time
             voice impersonation protection for incoming calls.
         </p>
@@ -3004,9 +3004,11 @@ function createVoiceCallProtectionUI() {
             </strong>
 
             <br>
+            <span id="voiceCallInstruction">
 
             Select a voice recording and analyze it
             to simulate call protection.
+            </span>
         </div>
 
         <button
@@ -4113,6 +4115,10 @@ const translations = {
         startCallerAnalysis: "🎙️ कॉलर विश्लेषण शुरू करें",
         stopCallerAnalysis: "⏹️ रोकें और कॉलर का विश्लेषण करें",
         simulateCaller: "📞 चयनित आवाज़ से सिमुलेट करें",
+        voiceCallTitle: "📞 एआई वॉइस कॉल सुरक्षा",
+        voiceCallDescription: "TrustGuard AI आने वाली कॉल में आवाज़ की नकल की संभावना का विश्लेषण कर सकता है।",
+        voiceCallReady: "कॉल सुरक्षा तैयार है",
+        voiceCallInstruction: "कॉल सुरक्षा का अनुकरण करने के लिए एक वॉइस रिकॉर्डिंग चुनें और उसका विश्लेषण करें।",
         language: "🌐 भाषा:",
         messageTitle: "🔍 संदिग्ध संदेश की जाँच करें",
         messagePlaceholder: "संदिग्ध संदेश यहाँ डालें...",
@@ -4134,6 +4140,10 @@ const translations = {
         startCallerAnalysis: "🎙️ కాలర్ విశ్లేషణ ప్రారంభించండి",
         stopCallerAnalysis: "⏹️ ఆపి కాలర్‌ను విశ్లేషించండి",
         simulateCaller: "📞 ఎంచుకున్న వాయిస్‌తో సిమ్యులేట్ చేయండి",
+        voiceCallTitle: "📞 AI వాయిస్ కాల్ రక్షణ",
+        voiceCallDescription: "TrustGuard AI ఇన్‌కమింగ్ కాల్స్‌లో వాయిస్ అనుకరణ ప్రమాదాన్ని విశ్లేషించగలదు.",
+        voiceCallReady: "కాల్ రక్షణ సిద్ధంగా ఉంది",
+        voiceCallInstruction: "కాల్ రక్షణను అనుకరించడానికి వాయిస్ రికార్డింగ్‌ను ఎంచుకుని విశ్లేషించండి.",
         language: "🌐 భాష:",
         messageTitle: "🔍 అనుమానాస్పద సందేశాన్ని తనిఖీ చేయండి",
         messagePlaceholder: "అనుమానాస్పద సందేశాన్ని ఇక్కడ నమోదు చేయండి...",
@@ -4154,7 +4164,11 @@ const translations = {
         stopRecording: "⏹️ ரெக்கார்டிங்கை நிறுத்தவும்",
         startCallerAnalysis: "🎙️ அழைப்பாளரைப் பகுப்பாய்வு செய்யத் தொடங்கவும்",
         stopCallerAnalysis: "⏹️ நிறுத்தி அழைப்பாளரைப் பகுப்பாய்வு செய்யவும்",
-        simulateCaller: "📞 தேர்ந்தெடுக்கப்பட்ட குரலைப் பயன்படுத்தி சிமுலேட் செய்யவும்",  
+        simulateCaller: "📞 தேர்ந்தெடுக்கப்பட்ட குரலைப் பயன்படுத்தி சிமுலேட் செய்யவும்", 
+        voiceCallTitle: "📞 AI குரல் அழைப்பு பாதுகாப்பு",
+        voiceCallDescription: "TrustGuard AI உள்வரும் அழைப்புகளில் குரல் போலியாக பயன்படுத்தப்படும் அபாயத்தை பகுப்பாய்வு செய்ய முடியும்.",
+        voiceCallReady: "அழைப்பு பாதுகாப்பு தயார்",
+        voiceCallInstruction: "அழைப்பு பாதுகாப்பை உருவகப்படுத்த குரல் பதிவைத் தேர்ந்தெடுத்து பகுப்பாய்வு செய்யவும்.", 
         
         language: "🌐 மொழி:",
         messageTitle: "🔍 சந்தேகத்திற்கிடமான செய்தியைச் சரிபார்க்கவும்",
@@ -4177,6 +4191,10 @@ const translations = {
         startCallerAnalysis: "🎙️ ಕರೆ ಮಾಡುವವರ ವಿಶ್ಲೇಷಣೆಯನ್ನು ಪ್ರಾರಂಭಿಸಿ",
         stopCallerAnalysis: "⏹️ ನಿಲ್ಲಿಸಿ ಮತ್ತು ಕರೆ ಮಾಡುವವರನ್ನು ವಿಶ್ಲೇಷಿಸಿ",
         simulateCaller: "📞 ಆಯ್ಕೆಮಾಡಿದ ಧ್ವನಿಯನ್ನು ಬಳಸಿ ಸಿಮ್ಯುಲೇಟ್ ಮಾಡಿ",
+        voiceCallTitle: "📞 AI ಧ್ವನಿ ಕರೆ ರಕ್ಷಣೆ",
+        voiceCallDescription: "TrustGuard AI ಒಳಬರುವ ಕರೆಗಳಲ್ಲಿ ಧ್ವನಿ ಅನುಕರಣೆ ಅಪಾಯವನ್ನು ವಿಶ್ಲೇಷಿಸಬಹುದು.",
+        voiceCallReady: "ಕರೆ ರಕ್ಷಣೆ ಸಿದ್ಧವಾಗಿದೆ",
+        voiceCallInstruction: "ಕರೆ ರಕ್ಷಣೆಯನ್ನು ಅನುಕರಿಸಲು ಧ್ವನಿ ರೆಕಾರ್ಡಿಂಗ್ ಆಯ್ಕೆಮಾಡಿ ಮತ್ತು ವಿಶ್ಲೇಷಿಸಿ.",
         language: "🌐 ಭಾಷೆ:",
         messageTitle: "🔍 ಅನುಮಾನಾಸ್ಪದ ಸಂದೇಶವನ್ನು ಪರಿಶೀಲಿಸಿ",
         messagePlaceholder: "ಅನುಮಾನಾಸ್ಪದ ಸಂದೇಶವನ್ನು ಇಲ್ಲಿ ನಮೂದಿಸಿ...",
@@ -4198,6 +4216,10 @@ const translations = {
         startCallerAnalysis: "🎙️ कॉलर विश्लेषण शुरू करा",
         stopCallerAnalysis: "⏹️ रोकें और कॉलर का विश्लेषण करें",
         simulateCaller: "📞 चयनित आवाज़ से सिमुलेट करें",
+        voiceCallTitle: "📞 AI व्हॉइस कॉल संरक्षण",
+        voiceCallDescription: "TrustGuard AI येणाऱ्या कॉलमध्ये आवाजाची नक्कल होण्याचा धोका विश्लेषित करू शकते.",
+        voiceCallReady: "कॉल संरक्षण तयार आहे",
+        voiceCallInstruction: "कॉल संरक्षणाचे अनुकरण करण्यासाठी व्हॉइस रेकॉर्डिंग निवडा आणि त्याचे विश्लेषण करा.",
         language: "🌐 भाषा:",
         messageTitle: "🔍 संशयास्पद संदेश तपासा",
         messagePlaceholder: "संशयास्पद संदेश येथे टाका...",
@@ -4219,6 +4241,10 @@ const translations = {
         startCallerAnalysis: "🎙️ কলার বিশ্লেষণ শুরু করুন",
         stopCallerAnalysis: "⏹️ থামিয়ে কলার বিশ্লেষণ করুন",
         simulateCaller: "📞 নির্বাচিত ভয়েস ব্যবহার করে সিমুলেট করুন",
+        voiceCallTitle: "📞 AI ভয়েস কল সুরক্ষা",
+        voiceCallDescription: "TrustGuard AI আসা কলগুলিতে ভয়েস নকলের ঝুঁকি বিশ্লেষণ করতে পারে।",
+        voiceCallReady: "কল সুরক্ষা প্রস্তুত",
+        voiceCallInstruction: "কল সুরক্ষা অনুকরণ করতে একটি ভয়েস রেকর্ডিং নির্বাচন করে বিশ্লেষণ করুন।",
         language: "🌐 ভাষা:",
         messageTitle: "🔍 সন্দেহজনক বার্তা পরীক্ষা করুন",
         messagePlaceholder: "সন্দেহজনক বার্তা এখানে লিখুন...",
@@ -4310,6 +4336,38 @@ if (stopCallerButton) {
 if (simulateCallerButton) {
     simulateCallerButton.textContent =
         t.simulateCaller;
+}
+// Voice Call Protection text
+const voiceCallTitle =
+    document.getElementById("voiceCallTitle");
+
+const voiceCallDescription =
+    document.getElementById("voiceCallDescription");
+
+const voiceCallReady =
+    document.getElementById("voiceCallReady");
+
+const voiceCallInstruction =
+    document.getElementById("voiceCallInstruction");
+
+if (voiceCallTitle) {
+    voiceCallTitle.textContent =
+        t.voiceCallTitle;
+}
+
+if (voiceCallDescription) {
+    voiceCallDescription.textContent =
+        t.voiceCallDescription;
+}
+
+if (voiceCallReady) {
+    voiceCallReady.textContent =
+        t.voiceCallReady;
+}
+
+if (voiceCallInstruction) {
+    voiceCallInstruction.textContent =
+        t.voiceCallInstruction;
 }
 
     // Voice title
