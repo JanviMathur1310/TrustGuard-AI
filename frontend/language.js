@@ -808,31 +808,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// ============================================================
-// WATCH FOR DYNAMIC RESULTS
-// ============================================================
-
-const languageObserver =
-    new MutationObserver(function () {
-
-        const lang =
-            localStorage.getItem("trustguardLanguage") || "en";
-
-        translateVoiceResult(translations[lang]);
-        translateResultLabels(translations[lang]);
-
-    });
-
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    languageObserver.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-
-    updateDynamicLanguage();
-});
 
 
 // ============================================================
@@ -932,23 +907,3 @@ function updateDynamicLanguage() {
 }
 
 
-// ============================================================
-// WATCH FOR NEW RESULTS
-// ============================================================
-
-const dynamicLanguageObserver =
-    new MutationObserver(function () {
-
-        updateDynamicLanguage();
-
-    });
-
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    dynamicLanguageObserver.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-
-});
