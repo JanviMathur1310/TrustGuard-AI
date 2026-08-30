@@ -4098,6 +4098,8 @@ const translations = {
     hi: {
         title: "🛡️ TrustGuard AI",
         subtitle: "AI द्वारा डिजिटल धोखाधड़ी का पता लगाना और वास्तविक समय सुरक्षा",
+        startRecording: "🎙️ रिकॉर्डिंग शुरू करें",
+        stopRecording: "⏹️ रिकॉर्डिंग रोकें",
         language: "🌐 भाषा:",
         messageTitle: "🔍 संदिग्ध संदेश की जाँच करें",
         messagePlaceholder: "संदिग्ध संदेश यहाँ डालें...",
@@ -4114,6 +4116,8 @@ const translations = {
     te: {
         title: "🛡️ TrustGuard AI",
         subtitle: "AI ఆధారిత డిజిటల్ మోసం గుర్తింపు మరియు రియల్ టైమ్ రక్షణ",
+        startRecording: "🎙️ రికార్డింగ్ ప్రారంభించండి",
+        stopRecording: "⏹️ రికార్డింగ్ ఆపండి",
         language: "🌐 భాష:",
         messageTitle: "🔍 అనుమానాస్పద సందేశాన్ని తనిఖీ చేయండి",
         messagePlaceholder: "అనుమానాస్పద సందేశాన్ని ఇక్కడ నమోదు చేయండి...",
@@ -4130,6 +4134,9 @@ const translations = {
     ta: {
         title: "🛡️ TrustGuard AI",
         subtitle: "AI மூலம் டிஜிட்டல் மோசடி கண்டறிதல் மற்றும் நிகழ்நேர பாதுகாப்பு",
+        startRecording: "🎙️ రికార్డింగ్ ప్రారంభிக்கவும்",
+        stopRecording: "⏹️ ரெக்கார்டிங்கை நிறுத்தவும்",  
+        
         language: "🌐 மொழி:",
         messageTitle: "🔍 சந்தேகத்திற்கிடமான செய்தியைச் சரிபார்க்கவும்",
         messagePlaceholder: "சந்தேகத்திற்கிடமான செய்தியை இங்கே உள்ளிடவும்...",
@@ -4146,6 +4153,8 @@ const translations = {
     kn: {
         title: "🛡️ TrustGuard AI",
         subtitle: "AI ಆಧಾರಿತ ಡಿಜಿಟಲ್ ವಂಚನೆ ಪತ್ತೆ ಮತ್ತು ನೈಜ-ಸಮಯದ ರಕ್ಷಣೆ",
+        startRecording: "🎙️ ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಿ",
+        stopRecording: "⏹️ ರೆಕಾರ್ಡಿಂಗ್ ನಿಲ್ಲಿಸಿ",
         language: "🌐 ಭಾಷೆ:",
         messageTitle: "🔍 ಅನುಮಾನಾಸ್ಪದ ಸಂದೇಶವನ್ನು ಪರಿಶೀಲಿಸಿ",
         messagePlaceholder: "ಅನುಮಾನಾಸ್ಪದ ಸಂದೇಶವನ್ನು ಇಲ್ಲಿ ನಮೂದಿಸಿ...",
@@ -4162,6 +4171,8 @@ const translations = {
     mr: {
         title: "🛡️ TrustGuard AI",
         subtitle: "AI द्वारे डिजिटल फसवणूक शोध आणि रिअल-टाइम संरक्षण",
+        startRecording: "🎙️ रेकॉर्डिंग सुरू करा",
+        stopRecording: "⏹️ रेकॉर्डिंग थांबवा",
         language: "🌐 भाषा:",
         messageTitle: "🔍 संशयास्पद संदेश तपासा",
         messagePlaceholder: "संशयास्पद संदेश येथे टाका...",
@@ -4178,6 +4189,8 @@ const translations = {
     bn: {
         title: "🛡️ TrustGuard AI",
         subtitle: "AI দ্বারা ডিজিটাল প্রতারণা শনাক্তকরণ এবং রিয়েল-টাইম সুরক্ষা",
+        startRecording: "🎙️ রেকর্ডিং শুরু করুন",
+        stopRecording: "⏹️ রেকর্ডিং বন্ধ করুন",
         language: "🌐 ভাষা:",
         messageTitle: "🔍 সন্দেহজনক বার্তা পরীক্ষা করুন",
         messagePlaceholder: "সন্দেহজনক বার্তা এখানে লিখুন...",
