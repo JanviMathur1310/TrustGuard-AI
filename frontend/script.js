@@ -4080,6 +4080,8 @@ const translations = {
     en: {
         title: "🛡️ TrustGuard AI",
         subtitle: "AI-Powered Digital Scam Detection & Real-Time Protection",
+        startRecording: "🎙️ Start Recording",
+        stopRecording: "⏹️ Stop Recording",
         language: "🌐 Language:",
         messageTitle: "🔍 Check a Suspicious Message",
         messagePlaceholder: "Paste a suspicious message here...",
