@@ -737,21 +737,25 @@ function getIndicatorExplanation(indicator) {
 
 function buildWhyDetectedItems(indicators) {
 
+    const t = getResultTranslation();
+
     if (!Array.isArray(indicators) || indicators.length === 0) {
         return `
             <li>
-                No strong suspicious indicators were detected.
+                ${t.safe || "No strong suspicious indicators were detected."}
             </li>
         `;
     }
 
     return indicators.map(indicator => `
         <li>
-            <strong>${escapeHtml(indicator)}</strong>
+            <strong>${escapeHtml(translateIndicator(indicator))}</strong>
             <br>
-            <span>${escapeHtml(
-                getIndicatorExplanation(indicator)
-            )}</span>
+            <span>
+                ${escapeHtml(
+                    translateIndicatorExplanation(indicator)
+                )}
+            </span>
         </li>
     `).join("");
 }
@@ -760,16 +764,22 @@ function buildWhyDetectedItems(indicators) {
 function showWhyDetected(indicators, type = "MESSAGE") {
 
     const existing = getElement("whyDetected");
+    const t = getResultTranslation();
+
+    const heading =
+        t.whyDetected || "🧠 Why was this detected?";
+
+    const identified =
+        t.identified ||
+        "TrustGuard AI identified the following characteristics in this message:";
 
     if (existing) {
+
         existing.innerHTML = `
-            <h3>🧠 Why was this detected?</h3>
+            <h3>${heading}</h3>
 
             <p>
-                TrustGuard AI identified the following
-                characteristics in this ${escapeHtml(
-                    type.toLowerCase()
-                )}:
+                ${identified}
             </p>
 
             <ul>
@@ -780,9 +790,6 @@ function showWhyDetected(indicators, type = "MESSAGE") {
         existing.classList.remove("hidden");
         return;
     }
-
-    // If the HTML does not already contain the element,
-    // create it automatically.
 
     const result =
         type === "VOICE"
@@ -796,17 +803,13 @@ function showWhyDetected(indicators, type = "MESSAGE") {
     const box = document.createElement("div");
 
     box.id = "whyDetected";
-
     box.className = "why-detected";
 
     box.innerHTML = `
-        <h3>🧠 Why was this detected?</h3>
+        <h3>${heading}</h3>
 
         <p>
-            TrustGuard AI identified the following
-            characteristics in this ${escapeHtml(
-                type.toLowerCase()
-            )}:
+            ${identified}
         </p>
 
         <ul>
@@ -816,7 +819,6 @@ function showWhyDetected(indicators, type = "MESSAGE") {
 
     result.appendChild(box);
 }
-
 
 // ============================================================
 // RISK SUMMARY PANEL
@@ -833,22 +835,38 @@ function createRiskSummary(score, level, type = "MESSAGE") {
         return;
     }
 
-    let summary =
-        getElement("riskSummary");
+    let summary = getElement("riskSummary");
 
     if (!summary) {
         summary = document.createElement("div");
         summary.id = "riskSummary";
         summary.className = "risk-summary";
-
         container.prepend(summary);
     }
 
     const safeLevel =
         String(level || "LOW").toUpperCase();
 
+    const t = getResultTranslation();
+
+    let levelText = t.safe;
+
+    if (safeLevel === "HIGH") {
+        levelText = t.high;
+    } else if (safeLevel === "MEDIUM") {
+        levelText = t.caution;
+    }
+
+    let explanation = t.safeRecommendation;
+
+    if (safeLevel === "HIGH") {
+        explanation = t.highRecommendation;
+    } else if (safeLevel === "MEDIUM") {
+        explanation = t.cautionRecommendation;
+    }
+
     summary.innerHTML = `
-        <h3>🛡️ Threat Risk Assessment</h3>
+        <h3>🛡️ ${t.riskLevel || "Threat Risk Assessment"}</h3>
 
         <div class="risk-meter-container">
             <div
@@ -863,7 +881,7 @@ function createRiskSummary(score, level, type = "MESSAGE") {
         <div class="risk-meter-info">
             <strong id="threatRiskLabel">
                 ${getRiskEmoji(safeLevel)}
-                ${escapeHtml(safeLevel)} RISK
+                ${escapeHtml(levelText)}
             </strong>
 
             <strong id="threatRiskValue">
@@ -872,17 +890,10 @@ function createRiskSummary(score, level, type = "MESSAGE") {
         </div>
 
         <p class="risk-explanation">
-            ${
-                safeLevel === "HIGH"
-                    ? "Strong scam or impersonation indicators were detected. Avoid responding and independently verify the sender or caller."
-                    : safeLevel === "MEDIUM"
-                    ? "Some suspicious characteristics were detected. Verify the sender or caller before sharing sensitive information."
-                    : "No major suspicious indicators were detected, but unexpected requests should still be verified."
-            }
+            ${escapeHtml(explanation)}
         </p>
     `;
 }
-
 
 // ============================================================
 // COMBINE BACKEND + LOCAL DETECTION
@@ -960,32 +971,19 @@ function mergeMessageRisk(backendData, message) {
 
 function getMessageRecommendation(level) {
 
-    level =
-        String(level)
-            .toUpperCase();
+    level = String(level).toUpperCase();
+
+    const t = getResultTranslation();
 
     if (level === "HIGH") {
-        return (
-            "HIGH RISK! Do not click links, " +
-            "share OTPs, transfer money, " +
-            "or provide sensitive information. " +
-            "Verify through an official channel."
-        );
+        return t.highRecommendation;
     }
 
     if (level === "MEDIUM") {
-        return (
-            "MEDIUM RISK. Be cautious and " +
-            "verify the sender before sharing " +
-            "personal or financial information."
-        );
+        return t.cautionRecommendation;
     }
 
-    return (
-        "LOW RISK. No major suspicious " +
-        "indicators were detected. " +
-        "Continue to remain cautious."
-    );
+    return t.safeRecommendation;
 }
 
 
@@ -1037,19 +1035,21 @@ async function analyzeMessage() {
 
     showElement("result");
 
-    setText("score", "...");
-    setText("level", "ANALYZING...");
+    const t = getResultTranslation();
 
-    if (indicatorsElement) {
-        indicatorsElement.innerHTML =
-            "<li>🧠 TrustGuard AI is analyzing the message...</li>";
-    }
+setText("score", "...");
+setText("level", t.analyzing || "Analyzing...");
 
-    if (recommendationElement) {
-        recommendationElement.textContent =
-            "Checking urgency, OTP requests, banking content, suspicious links and other scam indicators...";
-    }
+if (indicatorsElement) {
+    indicatorsElement.innerHTML =
+        `<li>🧠 ${t.analyzingMessage || "TrustGuard AI is analyzing the message..."}</li>`;
+}
 
+if (recommendationElement) {
+    recommendationElement.textContent =
+        t.checkingIndicators ||
+        "Checking urgency, OTP requests, banking content, suspicious links and other scam indicators...";
+}
     const button =
         document.querySelector(
             'button[onclick="analyzeMessage()"]'
@@ -1176,7 +1176,7 @@ async function analyzeMessage() {
 
         if (levelElement) {
             levelElement.textContent =
-                riskLevel;
+             translateRiskLevel(riskLevel);
 
             setRiskClass(
                 levelElement,
@@ -1210,7 +1210,7 @@ async function analyzeMessage() {
                         document.createElement("li");
 
                     li.textContent =
-                        indicator;
+                        translateIndicator(indicator);
 
                     indicatorsElement.appendChild(li);
                 });
@@ -1223,8 +1223,8 @@ async function analyzeMessage() {
 
         if (recommendationElement) {
             recommendationElement.textContent =
-                mergedResult.recommendation;
-        }
+                   getTranslatedRecommendation(riskLevel);
+}
 
         // ----------------------------------------------------
         // NEW RISK SUMMARY
@@ -1652,12 +1652,8 @@ function showThreatAlert(
     level,
     type = "MESSAGE"
 ) {
-
-    const threatAlert =
-        getElement("threatAlert");
-
-    const threatMessage =
-        getElement("threatMessage");
+    const threatAlert = getElement("threatAlert");
+    const threatMessage = getElement("threatMessage");
 
     if (!threatAlert) {
         return;
@@ -1665,30 +1661,68 @@ function showThreatAlert(
 
     showElement("threatAlert");
 
+    const t = getResultTranslation();
+    const lang = getSelectedLanguage();
+
+    const communicationType =
+        lang === "hi" ? "संचार का प्रकार:" :
+        lang === "te" ? "కమ్యూనికేషన్ రకం:" :
+        lang === "ta" ? "தகவல் தொடர்பு வகை:" :
+        lang === "kn" ? "ಸಂವಹನದ ಪ್ರಕಾರ:" :
+        lang === "mr" ? "संवादाचा प्रकार:" :
+        lang === "bn" ? "যোগাযোগের ধরন:" :
+        "Communication Type:";
+
+    const riskScoreText =
+        t.riskScore || "Risk Score";
+
+    const riskLevelText =
+        t.riskLevel || "Risk Level";
+
+    const messageText =
+        lang === "hi" ? "संदेश:" :
+        lang === "te" ? "సందేశం:" :
+        lang === "ta" ? "செய்தி:" :
+        lang === "kn" ? "ಸಂದೇಶ:" :
+        lang === "mr" ? "संदेश:" :
+        lang === "bn" ? "বার্তা:" :
+        "Message:";
+
+    const typeText =
+        type === "MESSAGE"
+            ? (
+                lang === "hi" ? "संदेश" :
+                lang === "te" ? "సందేశం" :
+                lang === "ta" ? "செய்தி" :
+                lang === "kn" ? "ಸಂದೇಶ" :
+                lang === "mr" ? "संदेश" :
+                lang === "bn" ? "বার্তা" :
+                "Message"
+            )
+            : escapeHtml(type);
+
     if (threatMessage) {
-
         threatMessage.innerHTML = `
-
             <strong>
-                Communication Type:
+                ${communicationType}
             </strong>
 
-            ${escapeHtml(type)}
+            ${typeText}
 
             <br><br>
 
             <strong>
-                Risk Level:
+                ${riskLevelText}:
             </strong>
 
             <span class="${getRiskClassName(level)}">
-                ${escapeHtml(level)}
+                ${translateRiskLevel(level)}
             </span>
 
             <br>
 
             <strong>
-                Risk Score:
+                ${riskScoreText}:
             </strong>
 
             ${normalizeScore(score)}/100
@@ -1696,13 +1730,12 @@ function showThreatAlert(
             <br><br>
 
             <strong>
-                Message:
+                ${messageText}
             </strong>
 
             <br>
 
             ${escapeHtml(message)}
-
         `;
     }
 }
@@ -4283,9 +4316,94 @@ document.addEventListener("DOMContentLoaded", function () {
 const resultTranslations = {
 
     en: {
+        analysisResult: "📊 Analysis Result",
+        riskScore: "Risk Score",
+        riskLevel: "Risk Level",
+        detectedIndicators: "🚨 Detected Indicators",
+        recommendation: "💡 Recommendation",
+        whyDetected: "🧠 Why was this detected?",
+        identified: "TrustGuard AI identified the following characteristics in this message:",
         safe: "🟢 SAFE",
         caution: "🟡 CAUTION",
         high: "🔴 HIGH RISK",
+
+        indicators: {
+            "OTP or verification-code request":
+                "OTP or verification-code request",
+            "Urgency or pressure":
+                "Urgency or pressure",
+            "Banking or financial content":
+                "Banking or financial content",
+            "KYC or account-verification request":
+                "KYC or account-verification request",
+            "Request for sensitive credentials":
+                "Request for sensitive credentials",
+            "Money or payment request":
+                "Money or payment request",
+            "Account-blocking or suspension threat":
+                "Account-blocking or suspension threat",
+            "Suspicious link or redirection request":
+                "Suspicious link or redirection request",
+            "Request for personal information":
+                "Request for personal information",
+            "Possible impersonation attempt":
+                "Possible impersonation attempt",
+            "Prize or reward-related claim":
+                "Prize or reward-related claim",
+            "Parcel or delivery-related content":
+                "Parcel or delivery-related content",
+            "Parcel cancellation or delivery threat":
+                "Parcel cancellation or delivery threat",
+            "OTP request combined with parcel/delivery content":
+                "OTP request combined with parcel/delivery content",
+            "OTP request linked to parcel cancellation":
+                "OTP request linked to parcel cancellation",
+            "Call request combined with a sensitive request":
+                "Call request combined with a sensitive request",
+            "Multiple suspicious characteristics detected":
+                "Multiple suspicious characteristics detected"
+        },
+
+        explanations: {
+            "OTP or verification-code request":
+                "The message asks for an OTP or verification code.",
+            "Urgency or pressure":
+                "The message creates pressure to act immediately.",
+            "Banking or financial content":
+                "The message involves banking, cards, payments or financial activity.",
+            "KYC or account-verification request":
+                "The message uses KYC or account verification to request action.",
+            "Request for sensitive credentials":
+                "The message requests passwords, PINs, CVVs or login information.",
+            "Money or payment request":
+                "The message requests money, payment, transfer or financial action.",
+            "Account-blocking or suspension threat":
+                "The message threatens that an account will be blocked or suspended.",
+            "Suspicious link or redirection request":
+                "The message contains a suspicious link or redirection request.",
+            "Request for personal information":
+                "The message requests personal or identity information.",
+            "Possible impersonation attempt":
+                "The message may involve someone pretending to be another person or organization.",
+            "Prize or reward-related claim":
+                "The message claims that you have won a prize, reward or money.",
+            "Parcel or delivery-related content":
+                "The message contains parcel or delivery-related content.",
+            "Parcel cancellation or delivery threat":
+                "The message threatens parcel cancellation or delivery problems.",
+            "OTP request combined with parcel/delivery content":
+                "The message combines an OTP request with parcel or delivery content.",
+            "OTP request linked to parcel cancellation":
+                "The message combines an OTP request with a parcel cancellation threat.",
+            "Call request combined with a sensitive request":
+                "The message combines a call request with a sensitive request.",
+            "Multiple suspicious characteristics detected":
+                "Multiple suspicious characteristics were detected."
+        },
+        analyzing: "Analyzing...",
+        analyzingMessage: "🧠 TrustGuard AI is analyzing the message...",
+        checkingIndicators: "Checking urgency, OTP requests, banking content, suspicious links and other scam indicators...",
+
 
         safeRecommendation:
             "This message appears safe. Still, never share OTPs, passwords or banking details.",
@@ -4297,10 +4415,95 @@ const resultTranslations = {
             "⚠️ This message may be a scam. Do not click suspicious links or share OTP, PIN, password or bank details."
     },
 
+
     hi: {
+        analysisResult: "📊 विश्लेषण परिणाम",
+        riskScore: "जोखिम स्कोर",
+        riskLevel: "जोखिम स्तर",
+        detectedIndicators: "🚨 पाए गए संदिग्ध संकेत",
+        recommendation: "💡 सुझाव",
+        whyDetected: "🧠 इसे संदिग्ध क्यों माना गया?",
+        identified: "TrustGuard AI ने इस संदेश में निम्नलिखित संदिग्ध विशेषताएँ पहचानी हैं:",
         safe: "🟢 सुरक्षित",
         caution: "🟡 सावधान",
         high: "🔴 उच्च जोखिम",
+
+        indicators: {
+            "OTP or verification-code request":
+                "OTP या सत्यापन कोड की मांग",
+            "Urgency or pressure":
+                "जल्दी करने या दबाव बनाने की कोशिश",
+            "Banking or financial content":
+                "बैंकिंग या वित्तीय जानकारी",
+            "KYC or account-verification request":
+                "KYC या खाते के सत्यापन की मांग",
+            "Request for sensitive credentials":
+                "संवेदनशील पासवर्ड या क्रेडेंशियल की मांग",
+            "Money or payment request":
+                "पैसे या भुगतान की मांग",
+            "Account-blocking or suspension threat":
+                "खाता बंद या निलंबित करने की धमकी",
+            "Suspicious link or redirection request":
+                "संदिग्ध लिंक या रीडायरेक्शन का अनुरोध",
+            "Request for personal information":
+                "व्यक्तिगत जानकारी की मांग",
+            "Possible impersonation attempt":
+                "किसी व्यक्ति या संस्था की पहचान की नकल करने का प्रयास",
+            "Prize or reward-related claim":
+                "इनाम या पुरस्कार से संबंधित दावा",
+            "Parcel or delivery-related content":
+                "पार्सल या डिलीवरी से संबंधित सामग्री",
+            "Parcel cancellation or delivery threat":
+                "पार्सल रद्द करने या डिलीवरी की धमकी",
+            "OTP request combined with parcel/delivery content":
+                "पार्सल या डिलीवरी के साथ OTP की मांग",
+            "OTP request linked to parcel cancellation":
+                "पार्सल रद्द करने के साथ OTP की मांग",
+            "Call request combined with a sensitive request":
+                "कॉल के साथ संवेदनशील जानकारी की मांग",
+            "Multiple suspicious characteristics detected":
+                "कई संदिग्ध विशेषताएँ पाई गईं"
+        },
+
+        explanations: {
+            "OTP or verification-code request":
+                "यह संदेश OTP या सत्यापन कोड मांग रहा है।",
+            "Urgency or pressure":
+                "यह संदेश तुरंत कार्रवाई करने का दबाव बनाता है।",
+            "Banking or financial content":
+                "इस संदेश में बैंकिंग, भुगतान या वित्तीय गतिविधि से संबंधित जानकारी है।",
+            "KYC or account-verification request":
+                "यह संदेश KYC या खाते के सत्यापन के नाम पर कार्रवाई मांगता है।",
+            "Request for sensitive credentials":
+                "यह संदेश पासवर्ड, PIN, CVV या लॉगिन जानकारी मांगता है।",
+            "Money or payment request":
+                "यह संदेश पैसे, भुगतान या ट्रांसफर की मांग करता है।",
+            "Account-blocking or suspension threat":
+                "यह संदेश खाता बंद या निलंबित करने की धमकी देता है।",
+            "Suspicious link or redirection request":
+                "इस संदेश में संदिग्ध लिंक या रीडायरेक्शन का अनुरोध है।",
+            "Request for personal information":
+                "यह संदेश व्यक्तिगत या पहचान संबंधी जानकारी मांगता है।",
+            "Possible impersonation attempt":
+                "यह संदेश किसी व्यक्ति या संस्था की पहचान की नकल करने का प्रयास कर सकता है।",
+            "Prize or reward-related claim":
+                "यह संदेश इनाम, पुरस्कार या पैसे जीतने का दावा करता है।",
+            "Parcel or delivery-related content":
+                "इस संदेश में पार्सल या डिलीवरी से संबंधित जानकारी है।",
+            "Parcel cancellation or delivery threat":
+                "यह संदेश पार्सल रद्द होने या डिलीवरी की समस्या की धमकी देता है।",
+            "OTP request combined with parcel/delivery content":
+                "यह संदेश पार्सल की जानकारी के साथ OTP मांगता है।",
+            "OTP request linked to parcel cancellation":
+                "यह संदेश पार्सल रद्द करने के बहाने OTP मांगता है।",
+            "Call request combined with a sensitive request":
+                "यह संदेश कॉल के साथ संवेदनशील जानकारी मांगता है।",
+            "Multiple suspicious characteristics detected":
+                "संदेश में कई संदिग्ध विशेषताएँ पाई गई हैं।"
+        },
+        analyzing: "विश्लेषण किया जा रहा है...",
+        analyzingMessage: "🧠 TrustGuard AI संदेश का विश्लेषण कर रहा है...",
+        checkingIndicators: "जल्दी करने का दबाव, OTP अनुरोध, बैंकिंग जानकारी, संदिग्ध लिंक और अन्य धोखाधड़ी संकेतों की जांच की जा रही है...",
 
         safeRecommendation:
             "यह संदेश सुरक्षित दिखाई देता है। फिर भी OTP, पासवर्ड या बैंक की जानकारी साझा न करें।",
@@ -4312,10 +4515,21 @@ const resultTranslations = {
             "⚠️ यह संदेश धोखाधड़ी हो सकता है। संदिग्ध लिंक पर क्लिक न करें और OTP, PIN, पासवर्ड या बैंक विवरण साझा न करें।"
     },
 
+
     te: {
+        analysisResult: "📊 విశ్లేషణ ఫలితం",
+        riskScore: "ప్రమాద స్కోర్",
+        riskLevel: "ప్రమాద స్థాయి",
+        detectedIndicators: "🚨 గుర్తించిన అనుమానాస్పద సంకేతాలు",
+        recommendation: "💡 సూచన",
+        whyDetected: "🧠 ఇది ఎందుకు గుర్తించబడింది?",
+        identified: "TrustGuard AI ఈ సందేశంలో క్రింది అనుమానాస్పద లక్షణాలను గుర్తించింది:",
         safe: "🟢 సురక్షితం",
         caution: "🟡 జాగ్రత్త",
         high: "🔴 అధిక ప్రమాదం",
+        analyzing: "విశ్లేషిస్తోంది...",
+        analyzingMessage: "🧠 TrustGuard AI సందేశాన్ని విశ్లేషిస్తోంది...",
+        checkingIndicators: "అత్యవసరత, OTP అభ్యర్థనలు, బ్యాంకింగ్ సమాచారం, అనుమానాస్పద లింక్‌లు మరియు ఇతర మోసం సంకేతాలను తనిఖీ చేస్తోంది...",
 
         safeRecommendation:
             "ఈ సందేశం సురక్షితంగా కనిపిస్తోంది. అయినప్పటికీ OTP, పాస్‌వర్డ్ లేదా బ్యాంక్ వివరాలను పంచుకోవద్దు.",
@@ -4327,10 +4541,21 @@ const resultTranslations = {
             "⚠️ ఈ సందేశం మోసపూరితమైనది కావచ్చు. అనుమానాస్పద లింక్‌లపై క్లిక్ చేయవద్దు మరియు OTP, PIN, పాస్‌వర్డ్ లేదా బ్యాంక్ వివరాలను పంచుకోవద్దు."
     },
 
+
     ta: {
+        analysisResult: "📊 பகுப்பாய்வு முடிவு",
+        riskScore: "ஆபத்து மதிப்பெண்",
+        riskLevel: "ஆபத்து நிலை",
+        detectedIndicators: "🚨 கண்டறியப்பட்ட சந்தேக அறிகுறிகள்",
+        recommendation: "💡 பரிந்துரை",
+        whyDetected: "🧠 இது ஏன் கண்டறியப்பட்டது?",
+        identified: "TrustGuard AI இந்த செய்தியில் பின்வரும் சந்தேகமான அம்சங்களைக் கண்டறிந்துள்ளது:",
         safe: "🟢 பாதுகாப்பானது",
         caution: "🟡 எச்சரிக்கை",
         high: "🔴 அதிக ஆபத்து",
+        analyzing: "பகுப்பாய்வு செய்யப்படுகிறது...",
+        analyzingMessage: "🧠 TrustGuard AI செய்தியை பகுப்பாய்வு செய்கிறது...",
+        checkingIndicators: "அவசரம், OTP கோரிக்கைகள், வங்கி தகவல்கள், சந்தேகமான இணைப்புகள் மற்றும் பிற மோசடி அறிகுறிகள் சரிபார்க்கப்படுகின்றன...",
 
         safeRecommendation:
             "இந்த செய்தி பாதுகாப்பானதாகத் தெரிகிறது. இருப்பினும் OTP, கடவுச்சொல் அல்லது வங்கி விவரங்களைப் பகிர வேண்டாம்.",
@@ -4342,10 +4567,21 @@ const resultTranslations = {
             "⚠️ இந்த செய்தி மோசடியாக இருக்கலாம். சந்தேகமான இணைப்புகளைக் கிளிக் செய்ய வேண்டாம் மற்றும் OTP, PIN, கடவுச்சொல் அல்லது வங்கி விவரங்களைப் பகிர வேண்டாம்."
     },
 
+
     kn: {
+        analysisResult: "📊 ವಿಶ್ಲೇಷಣಾ ಫಲಿತಾಂಶ",
+        riskScore: "ಅಪಾಯದ ಸ್ಕೋರ್",
+        riskLevel: "ಅಪಾಯದ ಮಟ್ಟ",
+        detectedIndicators: "🚨 ಪತ್ತೆಯಾದ ಅನುಮಾನಾಸ್ಪದ ಸೂಚನೆಗಳು",
+        recommendation: "💡 ಶಿಫಾರಸು",
+        whyDetected: "🧠 ಇದನ್ನು ಏಕೆ ಪತ್ತೆಹಚ್ಚಲಾಗಿದೆ?",
+        identified: "TrustGuard AI ಈ ಸಂದೇಶದಲ್ಲಿ ಕೆಳಗಿನ ಅನುಮಾನಾಸ್ಪದ ಲಕ್ಷಣಗಳನ್ನು ಗುರುತಿಸಿದೆ:",
         safe: "🟢 ಸುರಕ್ಷಿತ",
         caution: "🟡 ಎಚ್ಚರಿಕೆ",
         high: "🔴 ಹೆಚ್ಚಿನ ಅಪಾಯ",
+        analyzing: "ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿದೆ...",
+        analyzingMessage: "🧠 TrustGuard AI ಸಂದೇಶವನ್ನು ವಿಶ್ಲೇಷಿಸುತ್ತಿದೆ...",
+        checkingIndicators: "ತುರ್ತು ಒತ್ತಡ, OTP ವಿನಂತಿಗಳು, ಬ್ಯಾಂಕಿಂಗ್ ಮಾಹಿತಿ, ಅನುಮಾನಾಸ್ಪದ ಲಿಂಕ್‌ಗಳು ಮತ್ತು ಇತರ ವಂಚನೆ ಸೂಚನೆಗಳನ್ನು ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...",
 
         safeRecommendation:
             "ಈ ಸಂದೇಶವು ಸುರಕ್ಷಿತವಾಗಿ ಕಾಣುತ್ತದೆ. ಆದರೂ OTP, ಪಾಸ್‌ವರ್ಡ್ ಅಥವಾ ಬ್ಯಾಂಕ್ ವಿವರಗಳನ್ನು ಹಂಚಿಕೊಳ್ಳಬೇಡಿ.",
@@ -4357,10 +4593,21 @@ const resultTranslations = {
             "⚠️ ಈ ಸಂದೇಶವು ವಂಚನೆಯಾಗಿರಬಹುದು. ಅನುಮಾನಾಸ್ಪದ ಲಿಂಕ್‌ಗಳನ್ನು ಕ್ಲಿಕ್ ಮಾಡಬೇಡಿ ಮತ್ತು OTP, PIN, ಪಾಸ್‌ವರ್ಡ್ ಅಥವಾ ಬ್ಯಾಂಕ್ ವಿವರಗಳನ್ನು ಹಂಚಿಕೊಳ್ಳಬೇಡಿ."
     },
 
+
     mr: {
+        analysisResult: "📊 विश्लेषण निकाल",
+        riskScore: "धोका गुण",
+        riskLevel: "धोक्याची पातळी",
+        detectedIndicators: "🚨 आढळलेले संशयास्पद संकेत",
+        recommendation: "💡 शिफारस",
+        whyDetected: "🧠 हे का आढळले?",
+        identified: "TrustGuard AI ने या संदेशातील खालील संशयास्पद वैशिष्ट्ये ओळखली:",
         safe: "🟢 सुरक्षित",
-        caution: "🟡 सावधान",
+        caution: "🟡 सावध",
         high: "🔴 उच्च धोका",
+        analyzing: "विश्लेषण केले जात आहे...",
+        analyzingMessage: "🧠 TrustGuard AI संदेशाचे विश्लेषण करत आहे...",
+        checkingIndicators: "तातडीचा दबाव, OTP विनंत्या, बँकिंग माहिती, संशयास्पद लिंक आणि इतर फसवणुकीच्या संकेतांची तपासणी केली जात आहे...",
 
         safeRecommendation:
             "हा संदेश सुरक्षित दिसत आहे. तरीही OTP, पासवर्ड किंवा बँक तपशील शेअर करू नका.",
@@ -4372,10 +4619,21 @@ const resultTranslations = {
             "⚠️ हा संदेश फसवणूक असू शकतो. संशयास्पद लिंकवर क्लिक करू नका आणि OTP, PIN, पासवर्ड किंवा बँक तपशील शेअर करू नका."
     },
 
+
     bn: {
+        analysisResult: "📊 বিশ্লেষণের ফলাফল",
+        riskScore: "ঝুঁকির স্কোর",
+        riskLevel: "ঝুঁকির স্তর",
+        detectedIndicators: "🚨 শনাক্ত সন্দেহজনক সংকেত",
+        recommendation: "💡 সুপারিশ",
+        whyDetected: "🧠 এটি কেন শনাক্ত হয়েছে?",
+        identified: "TrustGuard AI এই বার্তায় নিম্নলিখিত সন্দেহজনক বৈশিষ্ট্যগুলি শনাক্ত করেছে:",
         safe: "🟢 নিরাপদ",
         caution: "🟡 সতর্কতা",
         high: "🔴 উচ্চ ঝুঁকি",
+        analyzing: "বিশ্লেষণ করা হচ্ছে...",
+        analyzingMessage: "🧠 TrustGuard AI বার্তাটি বিশ্লেষণ করছে...",
+        checkingIndicators: "জরুরি চাপ, OTP অনুরোধ, ব্যাংকিং তথ্য, সন্দেহজনক লিঙ্ক এবং অন্যান্য প্রতারণার সংকেত পরীক্ষা করা হচ্ছে...",
 
         safeRecommendation:
             "এই বার্তাটি নিরাপদ বলে মনে হচ্ছে। তবুও OTP, পাসওয়ার্ড বা ব্যাংকের তথ্য শেয়ার করবেন না।",
@@ -4388,12 +4646,36 @@ const resultTranslations = {
     }
 };
 
-
 // Get selected language
 function getSelectedLanguage() {
 
+
     return localStorage.getItem("trustguardLanguage") || "en";
 
+}
+function getResultTranslation() {
+    const lang = getSelectedLanguage();
+    return resultTranslations[lang] || resultTranslations.en;
+}
+
+function translateIndicator(indicator) {
+    const t = getResultTranslation();
+
+    if (t.indicators && t.indicators[indicator]) {
+        return t.indicators[indicator];
+    }
+
+    return indicator;
+}
+
+function translateIndicatorExplanation(indicator) {
+    const t = getResultTranslation();
+
+    if (t.explanations && t.explanations[indicator]) {
+        return t.explanations[indicator];
+    }
+
+    return indicator;
 }
 
 
