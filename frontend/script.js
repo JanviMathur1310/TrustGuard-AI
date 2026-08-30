@@ -4272,26 +4272,21 @@ if (voiceCallInstruction) {
 // Load saved language when page opens
 document.addEventListener("DOMContentLoaded", function () {
 
-    const savedLanguage =
-        localStorage.getItem(
-            "trustguardLanguage"
-        );
+    const selector =
+        document.getElementById("languageSelect");
 
-    if (savedLanguage) {
+    if (selector) {
 
-        const selector =
-            document.getElementById(
-                "languageSelect"
-            );
+        const savedLanguage =
+            localStorage.getItem("trustguardLanguage") || "en";
 
-        if (selector) {
+        selector.value = savedLanguage;
 
-            selector.value =
-                savedLanguage;
+        selector.addEventListener("change", changeLanguage);
 
-            changeLanguage();
-        }
+        changeLanguage();
     }
+
 });
 // ============================================================
 // 🌐 TRUSTGUARD AI - MULTILINGUAL RESULT SUPPORT
