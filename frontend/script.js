@@ -2985,9 +2985,9 @@ function createVoiceCallProtectionUI() {
 
     card.innerHTML = `
 
-        <h2>
+        <h2 id="voiceCallTitle">
             📞 AI Voice Call Protection
-        </h2>
+        </h2> 
 
         <p>
             TrustGuard AI can simulate real-time
@@ -2999,7 +2999,7 @@ function createVoiceCallProtectionUI() {
             class="voice-call-status"
         >
             🟢
-            <strong>
+            <strong id="voiceCallReady">
                 CALL PROTECTION READY
             </strong>
 
@@ -3011,18 +3011,21 @@ function createVoiceCallProtectionUI() {
 
         <button
     onclick="startCallVoiceRecording()"
+    id="startCallerAnalysisBtn"
 >
     🎙️ Start Caller Analysis
 </button>
 
 <button
     onclick="stopAndAnalyzeCallerVoice()"
+    id="stopCallerAnalysisBtn"
 >
     ⏹️ Stop & Analyze Caller
 </button>
 
 <button
     onclick="simulateIncomingVoiceCall()"
+    id="simulateCallerBtn"
 >
     📞 Simulate Using Selected Voice
 </button>
@@ -4082,6 +4085,13 @@ const translations = {
         subtitle: "AI-Powered Digital Scam Detection & Real-Time Protection",
         startRecording: "🎙️ Start Recording",
         stopRecording: "⏹️ Stop Recording",
+        voiceCallTitle: "📞 AI Voice Call Protection",
+        voiceCallDescription: "TrustGuard AI can simulate real-time voice impersonation protection for incoming calls.",
+        voiceCallReady: "CALL PROTECTION READY",
+        voiceCallInstruction: "Select a voice recording and analyze it to simulate call protection.",
+        startCallerAnalysis: "🎙️ Start Caller Analysis",
+        stopCallerAnalysis: "⏹️ Stop & Analyze Caller",
+        simulateCaller: "📞 Simulate Using Selected Voice",
         language: "🌐 Language:",
         messageTitle: "🔍 Check a Suspicious Message",
         messagePlaceholder: "Paste a suspicious message here...",
@@ -4100,6 +4110,9 @@ const translations = {
         subtitle: "AI द्वारा डिजिटल धोखाधड़ी का पता लगाना और वास्तविक समय सुरक्षा",
         startRecording: "🎙️ रिकॉर्डिंग शुरू करें",
         stopRecording: "⏹️ रिकॉर्डिंग रोकें",
+        startCallerAnalysis: "🎙️ कॉलर विश्लेषण शुरू करें",
+        stopCallerAnalysis: "⏹️ रोकें और कॉलर का विश्लेषण करें",
+        simulateCaller: "📞 चयनित आवाज़ से सिमुलेट करें",
         language: "🌐 भाषा:",
         messageTitle: "🔍 संदिग्ध संदेश की जाँच करें",
         messagePlaceholder: "संदिग्ध संदेश यहाँ डालें...",
@@ -4118,6 +4131,9 @@ const translations = {
         subtitle: "AI ఆధారిత డిజిటల్ మోసం గుర్తింపు మరియు రియల్ టైమ్ రక్షణ",
         startRecording: "🎙️ రికార్డింగ్ ప్రారంభించండి",
         stopRecording: "⏹️ రికార్డింగ్ ఆపండి",
+        startCallerAnalysis: "🎙️ కాలర్ విశ్లేషణ ప్రారంభించండి",
+        stopCallerAnalysis: "⏹️ ఆపి కాలర్‌ను విశ్లేషించండి",
+        simulateCaller: "📞 ఎంచుకున్న వాయిస్‌తో సిమ్యులేట్ చేయండి",
         language: "🌐 భాష:",
         messageTitle: "🔍 అనుమానాస్పద సందేశాన్ని తనిఖీ చేయండి",
         messagePlaceholder: "అనుమానాస్పద సందేశాన్ని ఇక్కడ నమోదు చేయండి...",
@@ -4135,7 +4151,10 @@ const translations = {
         title: "🛡️ TrustGuard AI",
         subtitle: "AI மூலம் டிஜிட்டல் மோசடி கண்டறிதல் மற்றும் நிகழ்நேர பாதுகாப்பு",
         startRecording: "🎙️ రికార్డింగ్ ప్రారంభிக்கவும்",
-        stopRecording: "⏹️ ரெக்கார்டிங்கை நிறுத்தவும்",  
+        stopRecording: "⏹️ ரெக்கார்டிங்கை நிறுத்தவும்",
+        startCallerAnalysis: "🎙️ அழைப்பாளரைப் பகுப்பாய்வு செய்யத் தொடங்கவும்",
+        stopCallerAnalysis: "⏹️ நிறுத்தி அழைப்பாளரைப் பகுப்பாய்வு செய்யவும்",
+        simulateCaller: "📞 தேர்ந்தெடுக்கப்பட்ட குரலைப் பயன்படுத்தி சிமுலேட் செய்யவும்",  
         
         language: "🌐 மொழி:",
         messageTitle: "🔍 சந்தேகத்திற்கிடமான செய்தியைச் சரிபார்க்கவும்",
@@ -4155,6 +4174,9 @@ const translations = {
         subtitle: "AI ಆಧಾರಿತ ಡಿಜಿಟಲ್ ವಂಚನೆ ಪತ್ತೆ ಮತ್ತು ನೈಜ-ಸಮಯದ ರಕ್ಷಣೆ",
         startRecording: "🎙️ ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಿ",
         stopRecording: "⏹️ ರೆಕಾರ್ಡಿಂಗ್ ನಿಲ್ಲಿಸಿ",
+        startCallerAnalysis: "🎙️ ಕರೆ ಮಾಡುವವರ ವಿಶ್ಲೇಷಣೆಯನ್ನು ಪ್ರಾರಂಭಿಸಿ",
+        stopCallerAnalysis: "⏹️ ನಿಲ್ಲಿಸಿ ಮತ್ತು ಕರೆ ಮಾಡುವವರನ್ನು ವಿಶ್ಲೇಷಿಸಿ",
+        simulateCaller: "📞 ಆಯ್ಕೆಮಾಡಿದ ಧ್ವನಿಯನ್ನು ಬಳಸಿ ಸಿಮ್ಯುಲೇಟ್ ಮಾಡಿ",
         language: "🌐 ಭಾಷೆ:",
         messageTitle: "🔍 ಅನುಮಾನಾಸ್ಪದ ಸಂದೇಶವನ್ನು ಪರಿಶೀಲಿಸಿ",
         messagePlaceholder: "ಅನುಮಾನಾಸ್ಪದ ಸಂದೇಶವನ್ನು ಇಲ್ಲಿ ನಮೂದಿಸಿ...",
@@ -4173,6 +4195,9 @@ const translations = {
         subtitle: "AI द्वारे डिजिटल फसवणूक शोध आणि रिअल-टाइम संरक्षण",
         startRecording: "🎙️ रेकॉर्डिंग सुरू करा",
         stopRecording: "⏹️ रेकॉर्डिंग थांबवा",
+        startCallerAnalysis: "🎙️ कॉलर विश्लेषण शुरू करा",
+        stopCallerAnalysis: "⏹️ रोकें और कॉलर का विश्लेषण करें",
+        simulateCaller: "📞 चयनित आवाज़ से सिमुलेट करें",
         language: "🌐 भाषा:",
         messageTitle: "🔍 संशयास्पद संदेश तपासा",
         messagePlaceholder: "संशयास्पद संदेश येथे टाका...",
@@ -4191,6 +4216,9 @@ const translations = {
         subtitle: "AI দ্বারা ডিজিটাল প্রতারণা শনাক্তকরণ এবং রিয়েল-টাইম সুরক্ষা",
         startRecording: "🎙️ রেকর্ডিং শুরু করুন",
         stopRecording: "⏹️ রেকর্ডিং বন্ধ করুন",
+        startCallerAnalysis: "🎙️ কলার বিশ্লেষণ শুরু করুন",
+        stopCallerAnalysis: "⏹️ থামিয়ে কলার বিশ্লেষণ করুন",
+        simulateCaller: "📞 নির্বাচিত ভয়েস ব্যবহার করে সিমুলেট করুন",
         language: "🌐 ভাষা:",
         messageTitle: "🔍 সন্দেহজনক বার্তা পরীক্ষা করুন",
         messagePlaceholder: "সন্দেহজনক বার্তা এখানে লিখুন...",
@@ -4259,6 +4287,30 @@ function changeLanguage() {
         liveButton.textContent =
             t.liveProtection;
     }
+    // Voice Call Protection buttons
+const startCallerButton =
+    document.getElementById("startCallerAnalysisBtn");
+
+const stopCallerButton =
+    document.getElementById("stopCallerAnalysisBtn");
+
+const simulateCallerButton =
+    document.getElementById("simulateCallerBtn");
+
+if (startCallerButton) {
+    startCallerButton.textContent =
+        t.startCallerAnalysis;
+}
+
+if (stopCallerButton) {
+    stopCallerButton.textContent =
+        t.stopCallerAnalysis;
+}
+
+if (simulateCallerButton) {
+    simulateCallerButton.textContent =
+        t.simulateCaller;
+}
 
     // Voice title
     const voiceCard =
