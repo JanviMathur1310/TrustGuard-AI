@@ -2989,7 +2989,7 @@ function createVoiceCallProtectionUI() {
             📞 AI Voice Call Protection
         </h2> 
 
-        <pid="voiceCallDescription">
+        <p id="voiceCallDescription">
             TrustGuard AI can simulate real-time
             voice impersonation protection for incoming calls.
         </p>
@@ -3513,147 +3513,6 @@ function stopVoiceRecording() {
 // START CALLER VOICE RECORDING
 // ============================================================
 
-async function startCallVoiceRecording() {
-
-    try {
-
-        const stream =
-            await navigator.mediaDevices.getUserMedia({
-                audio: true
-            });
-
-        recordedChunks = [];
-
-        mediaRecorder =
-            new MediaRecorder(stream);
-
-        mediaRecorder.ondataavailable = function (event) {
-
-            if (event.data.size > 0) {
-                recordedChunks.push(event.data);
-            }
-
-        };
-
-        mediaRecorder.onstop = function () {
-
-            const audioBlob =
-                new Blob(recordedChunks, {
-                    type: "audio/webm"
-                });
-
-            recordedVoiceFile =
-                new File(
-                    [audioBlob],
-                    "caller_voice.webm",
-                    {
-                        type: "audio/webm"
-                    }
-                );
-
-            const audioURL =
-                URL.createObjectURL(audioBlob);
-
-            const audioPlayer =
-                document.getElementById(
-                    "callRecordedAudio"
-                );
-
-            if (audioPlayer) {
-
-                audioPlayer.src = audioURL;
-
-                audioPlayer.classList.remove(
-                    "hidden"
-                );
-
-            }
-
-            const recordButton =
-                document.getElementById(
-                    "callRecordButton"
-                );
-
-            const stopButton =
-                document.getElementById(
-                    "callStopButton"
-                );
-
-            if (recordButton) {
-                recordButton.disabled = false;
-            }
-
-            if (stopButton) {
-                stopButton.disabled = true;
-            }
-
-            const status =
-                document.getElementById(
-                    "voiceCallStatus"
-                );
-
-            if (status) {
-
-                status.innerHTML =
-                    "✅ Recording ready. Click Stop & Analyze.";
-
-            }
-
-        };
-
-        mediaRecorder.start();
-
-        const recordButton =
-            document.getElementById(
-                "callRecordButton"
-            );
-
-        const stopButton =
-            document.getElementById(
-                "callStopButton"
-            );
-
-        if (recordButton) {
-            recordButton.disabled = true;
-        }
-
-        if (stopButton) {
-            stopButton.disabled = false;
-        }
-
-        const status =
-            document.getElementById(
-                "voiceCallStatus"
-            );
-
-        if (status) {
-
-            status.innerHTML =
-                "🔴 Recording caller voice... Speak now.";
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Caller microphone error:",
-            error
-        );
-
-        const status =
-            document.getElementById(
-                "voiceCallStatus"
-            );
-
-        if (status) {
-
-            status.innerHTML =
-                "❌ Microphone access failed. Please allow microphone permission.";
-
-        }
-
-    }
-}
 // ============================================================
 // ANALYZE RECORDED CALLER VOICE
 // ============================================================
@@ -4372,7 +4231,7 @@ if (voiceCallInstruction) {
 
     // Voice title
     const voiceCard =
-        document.querySelector(".voice-card");
+        document.querySelector(".voice-call-card");
 
     if (voiceCard) {
 
